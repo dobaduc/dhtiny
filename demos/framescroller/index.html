@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Thu, 01 Dec 1995 16:00:00 GMT">
+<title>Image scroller demo for Dang & Fan</title>
+
+<link rel="stylesheet" href="../common/dhtinydemo.css" />
+<script type="text/javascript" src="../../dhtiny.js"></script>
+<script type="text/javascript" src="../common/dhtinydemo.js"></script>
+
+
+<script type="text/javascript">
+
+initDHTinyDemo("Frame scroller demo");
+
+$dh.Require("ctrl/framescroller");
+$dh.addLoader(function(){
+    var test = new DHFrameScroller(document.body, {
+       imagePath:  $dh.root +"res/images/framescroller/",
+       itemImagePath: "../shopping/images/",
+       imageExt: "jpg",
+
+       top: 100,
+       left: 350,
+       height: 145,
+       width: 400,
+       
+       btSize: 25,
+       itemWidth: 100,
+       itemHeight: 130,
+       itemBorder: 3,
+       scrollInterval: 10,
+
+       border: "solid 1px red",
+       background: "lightyellow"
+    });
+
+    for (var i=1; i <7;i++)
+        test.addItem({type:"img", src:i});
+
+
+    //// Vertical
+    var test2 = new DHFrameScroller(document.body, {
+       scrollerType: "vertical",
+       imagePath: $dh.root +"res/images/framescroller/",
+       itemImagePath:  "../shopping/images/",
+       imageExt: "jpg",
+       
+       top: 100,
+       left: 200,
+       height: 400,
+       width: 120,
+
+       btSize: 25,
+       itemWidth: 100,
+       itemHeight: 140,
+       itemBorder: 3,
+       itemSpacing: 3,
+       scrollInterval: 10,
+
+       border: "solid 1px red",
+       background: "#ffddee"
+    });
+
+    for (var i=1; i <7;i++)
+        test2.addItem({type:"img", src:i});
+})
+</script>
+</head>
+<body>
+</body>
+</html>

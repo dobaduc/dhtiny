@@ -1,0 +1,264 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Dynamic blog demo</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+    <style type="text/css">
+        #Container {position: relative;top:100px;width:400px;height:400px;background:#030303;border:solid 2px black;margin: 0px auto; }
+        #player {background:black;border-top:solid 1px silver;position:absolute;bottom:0px;left:0px;width:100%;height:25px;}
+        .hslider {background-color:white;position:absolute;overflow:visible; top:10px; left: 65px; }
+        .pointer {background-color:#cc5555; border: solid 1px red; cursor: pointer;}
+        .progressbar {background-color:#993333;}
+        
+        #percentage {position:absolute; right: 0px; top:0px; height:25px;line-height: 27px;color: yellow; width:35px; font-size: 12px;}
+        #currentTime {text-align: right;}
+        #duration {text-align: left;}
+
+        #codecnt { border:solid 1px blue; text-align:left;font-size:12px;left:5px;top:5px;position:absolute;width:95%;height:95%;margin:5px;background: light:yellow;overflow:auto; color: purple;}
+    </style>
+</head>
+<body style="text-align:center;">
+
+<script type="text/javascript" src="../common/dhtinydemo.js"></script>
+<script id="main_source" type="text/javascript">
+/** Write demo title */
+initDHTinyDemo("Next generation blog entry demo");
+
+$dh.Require(["ctrl/dynablo/dynablo", "ctrl/animitem", "ctrl/slider", "ctrl/imgbutton", "ctrl/modalcanvas"]);
+
+var Editor;
+var S, Slider, VSlider, EFF =  DHMotion.AnimEffects.bounceEaseOut;
+var SWIDTH = 280, SHEIGHT=400;
+var animItems = [];
+
+$dh.addLoader(function() {
+    createDemoContainer();
+    createSlider();
+    createAnimItems();
+    createStory();
+    createButtons();
+
+    startTheShow();
+    createEditor();
+});
+
+function createEditor(){
+    var but = $dh.New("button",{
+        parentNode: $dh.el("DemoBody"),
+        style:"position:absolute;top:0px;left:0px;",
+        html: "Edit source",
+        click: function() {
+            $dh.el("codecnt").value = createAnimItems;
+            Editor.show(true);
+        }
+    })
+    var Editor = new DHModalCanvas(but, {
+			popupMode: true,
+            hideOnMaskClick: true,
+            hasmask: true,
+            maskprops: {cssText: "background:black;", opacity:60},
+            cssText: "background:#ffefef;border:solid 2px black;",
+            width: 550,
+            height:600,
+            innerHTML: "<textarea id= 'codecnt'></textarea>"
+    });
+    Editor.addEv("onhide", function() {
+        try {
+            eval("window['testFunc']= "+$dh.el("codecnt").value+";");
+        } catch (error) {}
+        if (!$dh.isFunc(window['testFunc'])) return;
+        window["createAnimItems"] = window['testFunc'];
+
+        $dh.rmCh("DemoBody", "Container");
+        createDemoContainer();
+        createSlider();
+        createAnimItems();
+        createStory();
+        createButtons();
+        startTheShow();
+    })
+}
+
+function createDemoContainer() {
+    // Writing this way is just to show what $dh.New can do
+    var ct = $dh.New("div",{
+        id: "Container",
+        parentNode: $dh.el("DemoBody"),
+        opac: 0,
+        innerHTML: '<div id="test5" ><img id="image5" src="images/smiley-lol.png" style="position:absolute;left:0px;width:100%;height:100%;"></img></div>'+
+                   '<div id="player"><div id="percentage"></div></div>'
+    });
+}
+
+function startTheShow() {
+    // Show player
+    M = new DHMotion($dh.el("Container"), DHMotion.AnimEffects.regularEaseIn, 1.5, function(val){
+        $dh.opac($dh.el("Container"), Math.floor(val));
+    });
+
+    M.start();
+}
+
+function createSlider() {
+    var targetBg = {r: 220, g: 236, b: 180};
+    var srcBg = {r: 40, g: 20, b: 10};
+
+    $dh.el("Container").style.backgroundColor = $dh.color.normalizeRGB(srcBg.r, srcBg.g, srcBg.b);
+
+     // Draw slider
+    Slider = new DHSlider($dh.el("player"), {
+        className: "hslider",
+        width: SWIDTH,
+        height:5,
+        minval:0, maxval:100,
+        type: "horizontal",
+        pointerProps: {
+            className: "pointer",
+            mintop: -5, minleft:0, maxleft: SWIDTH- 10,
+            width: 10, height: 15, top: -5, left:10
+        },
+        progressProps: {className: "progressbar"}
+    });
+    // Set sliding event
+    Slider.addEv("onslide", function(sender){
+        $dh.el("percentage").innerHTML = Math.round(sender.currentval)+"%";
+        var r =  Math.floor(srcBg.r + targetBg.r * sender.currentval/100);
+        var g =  Math.floor(srcBg.g + targetBg.g * sender.currentval/100);
+        var b =  Math.floor(srcBg.b + targetBg.b * sender.currentval/100);
+
+        $dh.el("Container").style.backgroundColor = $dh.color.normalizeRGB(r, g, b);
+
+        if (S.locked) return;
+        S.seek(sender.currentval/(sender.maxval - sender.minval));
+    });
+}
+
+function createButtons() {
+    var btplay = new DHImgButton($dh.el("player"), {position:"absolute", left: 8, top: 4, width: 20, height:20, cursor:"pointer",
+        image: "images/play.png", currentimg: "play"
+    });
+    btplay.changeImage = function(img) {
+         this.currentimg = img;
+         this.setProp("image", "images/"+img+".png");
+         this.setProp("title",img);
+    }
+    btplay.addEv("onclick",  function() {
+       switch (this.currentimg) {
+           case "play":
+               this.changeImage("pause");
+               S.locked = true;
+               if (!$dh.isNil(S.getActionStatus())) {
+                    if (S._currentTime < S.getDuration()) {
+                        document.title=" Resume"
+                        S.resume();
+                    }
+               }
+               else {
+                   document.title="Start"
+                   S.start();
+               }
+               break;
+           case "pause":
+               this.changeImage("play");
+               S.locked = false;
+               S.stop();
+               break;
+           case "restart":
+               this.changeImage("pause");
+               S.locked = false;
+               S.restart();
+               break;
+       }
+    });
+    S.addEv("onstop", function() {
+        btplay.changeImage("play");
+    });
+    S.addEv("onfinish", function() {
+        btplay.changeImage("restart");
+    });
+}
+
+function createAnimItems() {
+    // Empty the existing anim items
+    animItems = [];
+
+    // Start creating new
+    animItems.push(new DHAnimItem("Container",{
+      style: "position:absolute;top:100px;left:100px;width:50px;height:50px;background:red;",
+      duration: 1, exeFunc: EFF, visible: true,  animDelta: { width:100 }
+    }));
+    
+    animItems.push(new DHAnimItem("Container",{
+        style:"position:absolute;top:100px;left:250px;width:50px;height:50px;background:green;",
+        duration: 1, exeFunc: EFF, visible: true, animDelta: { height:100 }
+    }));
+    
+    animItems.push(new DHAnimItem("Container",{
+        style: "position:absolute;top:250px;left:250px;width:50px;height:50px;background:blue;",
+        duration: 1, exeFunc: EFF, visible: true, animDelta: { width:100, left: -100 }
+    }));
+    
+    animItems.push(new DHAnimItem("Container",{
+        style: "position:absolute;top:250px;left:100px;width:50px;height:50px;background:purple;",
+        duration: 1, exeFunc: EFF, visible: true, animDelta: { top: -100, height:100 }
+    }));
+    
+    animItems.push(new DHAnimItem({
+        _canvas: "test5",
+        style: "position:absolute;top:175px;left:175px;width:50px;height:50px;background:magenta;border:solid 1px yellow;z-index:100;",
+        duration: 1, exeFunc: EFF, visible: true, animDelta: { width:100, height:100,left:-50, top:-50, opacity: -10 }
+    }));
+    
+    // Text
+    animItems.push(new DHAnimItem($dh.el("Container"), {
+        cssText: "position: absolute; visibility: hidden; color:red;text-align: center; overflow:visible;font-weight:bold",
+        left: 145, top: -10,
+        width: 4, height: 4, fontSize: 5,
+        innerHTML: "COOL SMILE p(^_^)/3",
+        duration: 1, animDes: {width: 220, left: 95, top: 50, fontSize: 18},
+        onAnimStart: function() {
+            this.show(true);
+        },
+        onAnimation: function() {
+            this.show(this.fontSize > 6);
+        }
+    }));
+}
+
+function createStory() {
+    // Create story
+    S = new dynablo.story();
+    S.addEv("onrun", function(sender) {
+        Slider.seek( sender.getProgress());
+    });
+
+    for (var i =0 ; i < animItems.length; i++)
+        S.addChild(animItems[i], i);
+
+    S.addEv("onstop", function() {
+        S.locked = false;
+    });
+    S.addEv("onrestart", function() {
+        animItems[5].show(false);
+    })
+}
+
+
+/*Slider = new DHSlider(document.body, {
+    cssText: "position:absolute;",
+    top: 30, left: 10, width: 25, height: SHEIGHT, backgroundColor: "green",
+    minval:0, maxval:100,
+    type: "vertical",
+    pointerProps: {
+        mintop: 5, maxtop: SHEIGHT - 15, minleft:5, maxleft:5,
+        width: 15, height:10, top: 10, left: 5, backgroundColor: "red", cursor: "pointer"
+    }
+});
+VSlider.addEv("onslide", function(sender){
+    if (S.locked) return;
+    S.seek(sender.currentval/(sender.maxval - sender.minval));
+});*/
+</script>
+ </body>
+</html>

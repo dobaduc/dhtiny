@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>            
+<script type="text/javascript" src="../dhtiny.js"></script>
+<link rel="stylesheet" href="common/dhtinydemo.css" />
+<style type="text/css">
+.DHTreeView {padding: 0px;margin:0px;font-family:Times New Roman;font-size:14px;}
+.DHTreeView div:hover{text-decoration:underline;}
+.DHTreeView div{ cursor:pointer;}
+
+.DHTreeView .selectedNode { color: #551155;background:#ECE9D8; font-weight:bold;}
+.DHTreeView .expandedNode { color: #51155;font-weight:normal;}
+.DHTreeView .normalNode { color:   #551155;font-weight:normal;}
+
+.LeftTitle { position:absolute;top:0px;left:0px;width:400px; padding:16px;font-family: Georgia; font-size: 22px; color:#f3333c;}
+</style>
+</head>
+<body >
+<div id="GlobalContainer" style="position:absolute;left:0px;top:0px;width:100%;height:100%;z-index:2;">
+    <div id ="SourceContainer" style="position:absolute;left:0px;top:30px;width:100%;height:100%;z-index:0;display:none;"></div>
+    <iframe frameborder="0" id="DemoContainer" style="position:absolute;left:0px;top:0px;width:100%;height:100%;z-index:0;"></iframe>
+</div>
+<script type="text/javascript">
+var LeftContainer;
+DEMO = {    
+    createLeftMenu: function() {
+        LeftContainer = new DHDockPanel($dh.el("GlobalContainer"), {
+            cssText: "background:#efefef;border-right:solid 4px #303030;overflow:hidden;z-index:10;",
+            width: 250, height: "100%", dockpos: "left", dautohide: 1,
+            innerHTML: "<div class='LeftTitle'>:: DHTiny Demos ::</div>"
+        });
+      
+        
+        // Create button
+        var showBut = $dh.New("img", {
+            src: "common/forward.gif",
+            style : {cssText:"visibility:hidden;position:absolute;z-index:99999;top:0px;left:"+LeftContainer.width+"px",
+            size:[30,30]},
+            parentNode: $dh.el("GlobalContainer"),
+            title: "Click to see full menu",
+            onmouseover: function() {
+                if (LeftContainer.width < 200) {
+                    LeftContainer.maximize();
+                }
+                else LeftContainer.minimize();
+                this.style.visibility = "hidden";
+            }
+        });
+        LeftContainer.addEv("onanimation", function() {
+            showBut.style.left = this.width + "px";
+            if (this.width< 2) {
+                this.show(false);
+                showBut.style.visibility = "visible";
+            }
+            else this.show(true);
+        });
+
+        // Create menu content
+        // TreeView Demo
+        var data = [
+                  [ {innerHTML: "Utilities", iconType:"folder", status: "expanded"},
+                    [
+                       {innerHTML: "Drag & drop", iconType:"file", value:"dragmanager/index.html"},
+                       {innerHTML: "Animation", iconType:"file", value:"animation/index.html"},
+                       {innerHTML: "Image list", iconType:"file"}
+                    ]
+                  ],
+                  [ {innerHTML: "Basic controls", iconType:"folder", status: "expanded"},
+                    [
+                       {innerHTML: "Rich canvas", iconType:"file"},
+                       {innerHTML: "Animation item", iconType:"file", value:"animation/index.html", status: "expanded"},
+                       {innerHTML: "Dock panel", iconType:"file",value:""},
+                       {innerHTML: "Image button", iconType:"file", value: "imagebutton/index.html"},
+                       {innerHTML: "Tree view", iconType:"file", value:"treeview/index.html"},
+                       {innerHTML: "Dialog", iconType:"file", value: "dialog/index.html"},
+                       {innerHTML: "Console", iconType:"file", value: "animation/index.html"},
+                       {innerHTML: "Modal dialog mask", iconType:"file", value: "animation/index.html"}
+                    ]
+                  ],
+                  [ {innerHTML: "Compositive demos", iconType:"folder", status: "expanded/index.html", status: "expanded"},
+                    [
+                     {innerHTML: "Slide show", iconType:"file", value: "slideshow/index.html"},
+                     {innerHTML: "Frame scroller", iconType:"file", value: "framescroller/index.html"},
+                     {innerHTML: "Calendar", iconType:"file", value: "calendar/index.html"},
+                     {innerHTML: "Webtop demo", iconType:"file", value: "webtop/index.html"},
+                     {innerHTML: "Flash puzzle", iconType:"file", value : "puzzle/index.html"},
+                     {innerHTML: "Shopping demo", iconType:"file", value : "shopping/index.html"},
+                     {innerHTML: "Animation player 1", iconType:"file", value : "dynablo/index.html"},
+                     {innerHTML: "Blog entry player", iconType:"file", value : "dynablo/justdoit.html"}                     
+                    ]
+                  ],
+                  [ {innerHTML: "Comming soon", iconType:"folder"},
+                    [
+                     {innerHTML: "Text WYSIWYG", iconType:"file", value: "dheditor/index.html"},
+                     {innerHTML: "DHTiny component editor", iconType:"file" },
+                     {innerHTML: "Codeless animation editor", iconType:"file"},
+                     {innerHTML: "DH Scheduler", iconType:"file"},
+                     {innerHTML: "Giant AJAX table", iconType:"file"}
+                    ]
+                  ],
+                  {innerHTML: "Live dhtiny code editor", value:"index2.html"},
+                  {innerHTML: "Library core demo", value:"coredemo.html"}
+              ];
+        var tree = new DHTreeView(LeftContainer.canvas, {
+            cssText:"position:absolute;left:20px;top:60px;width:230px;overflow:hidden;",
+            nodeHeight: 22, imagePath: $dh.root + "res/images/DHTreeView/",
+            listType: 2, captionpadding: 4, iconwidth: 20,
+            className: "DHTreeView",
+            treeData: data
+        });
+        tree.addEv("onnodeclick", function(sender, node, ev) {
+            if (node.caption.value) {
+                DEMO.changeDemoSite(node.caption.value);
+            }
+        });
+        $dh.disableSelect(tree.canvas);
+    },
+    changeDemoSite: function (path) {
+        document.getElementById("DemoContainer").src = path;
+        LeftContainer.minimize();
+    }
+}
+
+$dh.addLoader(function() {
+    $dh.Require("ctrl/dockpanel.js");
+    $dh.Require("ctrl/treeview.js");
+    DEMO.createLeftMenu();
+});
+</script>
+ </body>
+</html>

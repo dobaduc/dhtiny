@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <script type="text/javascript" src="../dhtiny.js"></script>
+    <script type="text/javascript" src="../util/event.js"></script>
+    <script type="text/javascript" src="../util/animation.js"></script>        
+    <script type="text/javascript" src="../util/dragmanager.js"></script>
+    <script type="text/javascript" src="../util/imgList.js"></script>
+    
+    <script type="text/javascript" src="../ctrl/richCanvas.js"></script>
+    <script type="text/javascript" src="../ctrl/animItem.js"></script>    
+    <script type="text/javascript" src="../ctrl/dialog.js"></script>
+    <script type="text/javascript" src="../ctrl/imgButton.js"></script>
+    <script type="text/javascript" src="../ctrl/richButton.js"></script>
+    <script type="text/javascript" src="../ctrl/treeView.js"></script>
+    <script type="text/javascript" src="../ctrl/graph.js"></script>
+    
+<style type="text/css">
+body { font-size:12px;font-family:Arial;}
+.DHTreeView {padding: 0px;margin:0px;}
+.DHTreeView li div:hover{text-decoration:underline;}
+.DHTreeView div{ cursor:pointer;}
+.DHTreeView .selectedNode { color:#af0000;background:#ECE9D8; font-weight:bold;}
+.DHTreeView .expandedNode { color: blue;font-weight:normal;}
+.DHTreeView .normalNode { color: purple;font-weight:normal;}
+
+</style>
+</head>
+<body style="vertical-align:middle;" ondragstart="return false;">
+<script type="text/javascript">
+    var comp;
+    $dh.addLoader(function() {
+        comp = document.body.innerHTML.match(/function\s+test[A-Z,a-z,0-9]*/g);
+        for (var i = 0; i < comp.length; i++)
+            comp[i] = comp[i].substr(comp[i].indexOf("test") + 4);
+        comp.splice(0, 0, "");
+        makeDemoSelectBox();
+    });
+    
+    function testAnimation() {
+        var test = new DHRichCanvas(document.body, {left: 520, top: 100, position: "absolute", zIndex: 100, width: 100, height: 100, background: "red"});
+        var M = new DHMotion(test.canvas, null, 1);
+
+        M.setPropValue = function (val) {this.targetObj.style.width = Math.floor(100 + val) + "px";};
+
+        var M2 = new DHMotion(test.canvas, null, 1);
+        M2.setPropValue = function (val) {this.targetObj.style.height = Math.floor(100 + val) + "px";};
+
+        var S = new DHMotionSequence;
+
+        S.addChild(M);
+        S.addChild(M2);
+        S.start();
+        S.addEv("onstop", function (sender) {alert("stopped!");});
+        //$dh.dragger.setDrag(test.canvas, { mode: "RESIZE", noMask: false, ghostDrag: false, maxwidth: 400, maxheight: 400/*, minleft:50, maxleft:600, maxtop:400, mintop: 10*/ });
+    }
+
+    function testAnimItem() {
+        var div = new DHAnimItem(document.body, {
+            left: 100, top: 100, position: "absolute", zIndex: 100, width: 100, height: 100, background: "blue"
+        });
+        div.show();
+        //div.setAnimation({ left: 200, top: 200 }, 1);
+        //div.animation.start();
+        div.draw({ left: 520, top: 200 }, 1);
+    }
+
+    function testDialog() {        
+        var bs = $dh.bodySize();
+        // Dialog size: dw = width, dh = height
+        var dw = 400, dh = 320;
+        var dialog = new DHDialog(document.body, {
+            id : "MyDialog",
+            titleTxt: "DialogTitle: hogehoge",
+            bottomTxt: "Status value: ",
+            top: Math.floor(bs.height / 2), left: Math.floor(bs.width / 2), width: 20, height: 14,
+            color: "yellow",
+            titlebarHeight: 35,
+            zIndex: 999999,
+            imgPath: $dh.root + "res/images/dialog/theme2/"
+        });
+        dialog.bodypart.setProp("background", "rgb(51,51,51)");
+        dialog.title.style.cssText += ";text-align:center;font-weight:bold;border-bottom:solid 1px #aaaaaa"; // For FF
+        dialog.title2.canvas.style.borderBottom = "solid 1px #aaaaaa"; // For IE
+        dialog.title.style.cursor = "default";
+
+        var iframe = document.createElement("iframe");
+        iframe.style.cssText += "border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;"; //";border:none;left:" + dialog.cornerWidth + "px;height:" + (dh - dialog.titlebarHeight - dialog.bottombarHeight - 20) + "px;position:absolute;top:15px;width:" + (dw - 2 * dialog.cornerWidth) + "px;";
+        iframe.frameBorder = "0";
+        iframe.src = "http://google.com";
+
+        dialog.addEv("onanimstart", function() {
+            dialog.body.canvas.style.display = "none";
+        });
+        dialog.addEv("onanimstop", function() {
+            dialog.body.canvas.style.display = "";
+            dialog.body.canvas.appendChild(iframe);
+        });
+
+        var bs = $dh.bodySize();
+        dialog.show();
+        dialog.draw({ top: Math.floor(bs.height / 2), left: Math.floor(bs.width / 2), width: 5, height: 5 });
+        dialog.draw({ top: Math.floor(bs.height / 2 - dh/2), left: Math.floor(bs.width / 2 - 300), width: dw, height: dh }, 1);
+    }
+
+    function testImageButton() {
+        var but = new DHImgButton(document.body, {position:"absolute", left: 520, top: 100, width: 47, height:47,
+            image: "images/but1.gif", image_over: "images/but2.gif", image_down: "images/but3.gif"
+        });
+
+        but.addEv("onclick", function() {
+            alert("You clicked the button");
+        });
+    }
+    
+    function testRichButton() {
+        var but = new DHRichButton(document.body, {
+            position:"absolute", left: 520, top: 100, width: 147, height:47,
+            image: "images/but1.gif", image_over: "images/but2.gif", image_down: "images/but3.gif",
+            imgWidth: 55, imgPadding:10, text: "HOW ARE YOU?"
+        });
+
+        but.addEv("onclick", function() {
+            alert("You clicked on the rich button");
+        });
+    }
+
+    function testTreeView() {
+        // TreeView Demo
+        var data = [ // Layer 0
+              {innerHTML: "Item1",iconType:"file"},
+              {innerHTML: "Item2",iconType:"file"},
+              [   //Layer 1
+                  {innerHTML: "Item3",iconType:"folder"}, 
+                  [ // Layer2
+                    {innerHTML: "Item31",iconType:"file"},
+                    [
+                        {innerHTML: "Item32",iconType:"folder"},
+                        ["A1","A2","A3"]
+                    ],
+                    {innerHTML: "Item33",iconType:"file"}
+                  ]
+              ],
+              [  
+                 {innerHTML: "Item4",iconType:"folder"},
+                 [ // Layer1
+                     {innerHTML: "Item41",iconType:"file"}, 
+                     [ 
+                       {innerHTML: "Item42",iconType:"folder"}, 
+                       [  // Layer 2
+                         {innerHTML: "Item421",iconType:"file"},
+                         "Item422",
+                         [  
+                           {innerHTML: "Item423",iconType:"folder"},
+                           [ // Layer 3 
+                             "Item4231",
+                             {innerHTML: "Item423",iconType:"file"}
+                           ]
+                         ]
+                       ],
+                     ],
+                     "Item43"
+                 ]
+              ]
+        ];
+        
+        var tree = new DHTreeView(document.body, { 
+            cssText:"position:absolute;left:600px;top:100px;width:200px;height:300px;border:solid 1px green;overflow:auto;",
+            nodeHeight: 22, imagePath: $dh.root + "res/images/DHTreeView/",
+            listType: 2, captionpadding: 4, iconwidth: 20,
+            className: "DHTreeView",
+            treeData: data            
+        });        
+        
+        $dh.disableSelect(tree.canvas);
+    }
+    
+    // For demo only
+    function makeDemoSelectBox() {
+        var sel = window.DemoSelect = document.createElement("select");
+        
+        for (var i = 0; i < comp.length; i++) {
+            var op = document.createElement("option");
+            op.innerHTML = comp[i];
+            op.value = comp[i];
+            sel.appendChild(op);
+            if (i == window.saveLastID) {
+                op.selected = true;
+            }
+        }
+        sel.onchange = function() {
+            window.saveLastID = window.DemoSelect.selectedIndex;
+            var cmpName = window.DemoSelect.options[window.saveLastID].value;
+            if (cmpName == "")
+                return;
+            makeDemoSelectBox();
+            eval("test" + cmpName + "()");
+
+            var code = document.createElement("textarea");
+            code.style.cssText += "top: 100px;left:0px;height:450px;width: 500px;position:absolute;font-size:12px;z-index:0;background:lightyellow";
+            var lb = document.createElement("span");
+            lb.style.cssText += "top: 70px;left:0px;position:absolute;font-weight:bold;";
+            lb.innerHTML = "Source code&nbsp;&nbsp;";
+
+            var bt = document.createElement("button");
+            bt.innerHTML = "Refresh";
+            lb.appendChild(bt);
+            bt.onclick = function() { eval("window['test" + cmpName + "'] = " + code.value + ";"); window.DemoSelect.onchange() };
+
+            document.body.appendChild(code);
+            document.body.appendChild(lb);
+            code.value = window["test" + cmpName] + "";
+        }
+        document.body.innerHTML = "<br/><b>Select a component demo </b>";
+        document.body.appendChild(window.DemoSelect);
+        
+        $dh.dragger.mask = $dh.New("div", { id: "_$dh.draggerMask_" });
+        $dh.css($dh.dragger.mask, { zIndex: 1000000, background: "yellow", opac: 30, position: "absolute", display: "none" });
+        $dh.addCh(document.body, $dh.dragger.mask);
+    }
+</script>    
+ </body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>IFRAME Async file uploader example</title>
+</head>
+<body>   
+    <h1>
+        Upload file:</h1>
+    <p>
+        File will begin to upload just after selection.
+    </p>
+    <p>
+        You may write file description, while you file is being uploaded.</p>
+    <form action="test.php" target="upload_iframe" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="fileframe" value="true"><!-- Target of the form is set to hidden iframe --><!-- From will send its post data to fileframe section of      this PHP script (see above) -->
+	<label for="file">text file uploader:</label><br>
+    <!-- JavaScript is called by OnChange attribute -->
+    <input type="file" name="file" id="file" onchange="jsUpload(this)"></form>
+
+    <script type="text/javascript">
+    	/* This function is called when user selects file in file dialog */
+		function jsUpload(upload_field){	
+			var re_text = /\.txt|\.xml|\.zip/i;
+			var filename = upload_field.value;
+			/* Checking file type */
+			if (filename.search(re_text) == -1)    {
+				alert("File does not have text(txt, xml, zip) extension");
+				upload_field.form.reset();
+				return false;    
+			}
+			upload_field.form.submit();    
+			document.getElementById('upload_status').value = "uploading file...";
+			upload_field.disabled = true;
+			return true;
+		}
+	</script>
+
+    <iframe name="upload_iframe" style="width: 400px; height: 100px; display: none;">
+    </iframe>
+    <!-- For debugging purposes, it's often useful to remove     "display: none" from style="" attribute -->
+    <br>
+    Upload status:<br>
+    <input type="text" name="upload_status" id="upload_status" value="not uploaded" size="64"
+        disabled><br>
+    <br>
+    File name:<br>
+    <input type="text" name="filenamei" id="filenamei" value="none" disabled>
+	<form action="test.php" method="POST">
+	    <!-- one field is "disabled" for displaying-only. Other, hidden one is for     sending data -->
+	    <input type="hidden" name="filename" id="filename"><br>
+	    <br>
+	    <label for="photo">
+	        File description:</label><br>
+	    <textarea rows="5" cols="50" name="description"></textarea><br>
+	    <br>
+	    <input type="submit" id="upload_button" value="save file" disabled>
+	</form>
+    <br>
+    <br>
+    <a href="<?=$web_upload_dir?>/upload-log.html">upload-log</a><br>
+    <br>
+    <br>
+    Example by <a href="http://www.anyexample.com/">AnyExample</a>
+</body>
+</html>

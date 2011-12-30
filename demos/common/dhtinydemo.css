@@ -1,0 +1,52 @@
+/* 
+    Document   : dhtinydemo
+    Created on : Apr 18, 2011, 3:37:04 AM
+    Author     : duc
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    margin:0px;
+    padding: 0px;
+    overflow:hidden;
+
+    background:#aaa6a6;/*#030538;*/
+    background-repeat:no-repeat;
+    background-position:right bottom;
+    width: 100%;height:100%;
+}
+.BodyWrapper {
+    position:absolute;
+    width:100%;
+    height:100%;
+    margin:0px;
+    padding:0px;
+    top:0px;
+    left:0px;
+    /*background: url(../common/backgroundCorner.gif) no-repeat right bottom;*/
+}
+
+.DemoHeader {
+    position: absolute;
+    top:0px;left:0px; width:100%;
+    height:85px; line-height:80px;
+    text-align: center; background:#240011;
+    font-weight: bold; font-family: Georgia;  font-size: 28px;
+    border-bottom: double 4px gray;
+} 
+.DHTinyTitle {color:lightgreen;}
+.DemoTitle {color:orange;}
+
+.DemoBody {
+    position:absolute;
+    width: 100%; height: 100%;
+    top:86px;
+    left:0px;
+}
+.CopyrightPart{
+    position:absolute; right:10px; bottom:7px; line-height: 14px;
+    font-size:12px;color:#ddffdd; text-align: right;font-style: normal; font-weight: normal;
+}
+
+

@@ -1,0 +1,32 @@
+﻿table.optionTable
+{
+    text-align:left;
+    margin:0px;
+    padding:0px;
+    font-size:12px;
+    line-height:19px;
+    border-collapse:collapse;
+    border-style: none;
+    table-layout: auto;
+    position:relative;
+}
+/*table._optionTable td
+{ border: none; solid 1px silver;
+*/
+td { border:solid 1px blue}
+
+td.in0
+{
+    font-size: 12px;
+    border: solid 1px #f6f0f6;
+    white-space:nowrap;
+    background-color: #e0ffff;
+}
+
+td.in1
+{
+    font-size: 12px;
+    border: solid 1px #f6f0f6;
+    white-space:nowrap;
+    background-color: #daecff;
+}

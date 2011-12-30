@@ -1,0 +1,30 @@
+﻿tr.DHTbForm_titlebar1
+{ color: red; font-weight: bold; font-size:14px; }
+
+td.DHTbForm_body1
+{ border: solid 2px silver; font-size:12px; padding:0px; }
+
+tr.DHTbForm_bottombar1
+{ color : red; font-size:11px; padding:0px;}
+
+
+
+
+tr.DHTbForm_titlebar2
+{  color: white; text-align:center;font-weight:bold; font-size:14px;}
+
+td.DHTbForm_body2
+{  border: solid 1px black; font-size:12px; padding: 0px; margin: 0px; vertical-align:top; }
+
+tr.DHTbForm_bottombar2
+{ color : yellow; font-size:11px;}
+
+
+tr.DHTbForm_titlebar3
+{  color: white; text-align:center;font-weight:bold; font-size:14px;}
+
+td.DHTbForm_body3
+{ border: solid 1px rgb(0,64,128);padding: 0px; font-size:12px; margin: 0px; vertical-align:top; }
+
+tr.DHTbForm_bottombar3
+{  color : yellow; font-size:11px;}

@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+</head>
+<body>
+Select animation effect <select id="effect"></select><br />
+<div id="test" style="position:absolute;top:100px;left:100px;width:100px;height:100px;background:yellow;"></div>
+<button onclick="run1()">Run motion sequence</button>
+<button onclick="run2()">Run parallel motions</button>
+
+<script type="text/javascript">
+$dh.Require(["util/animation"]);
+// S: Motion sequence/ P: Parallel motion list
+var S = new DHMotionSequence();
+var P = new DHParallelMotions();
+var M, M2;
+
+$dh.addLoader(function() {
+    createOptions();
+    
+    var effect = document.getElementById("effect");
+    
+    M = new DHMotion(test, DHMotion.AnimEffects[effect.value], 1);
+    M.setPropValue = function(val) {
+        this.targetObj.style.width = Math.floor(100 + val) + "px"; 
+    }    
+    M2 = new DHMotion(test, DHMotion.AnimEffects[effect.value], 1);
+    M2.setPropValue = function(val) { 
+        this.targetObj.style.height = Math.floor(100 + val) + "px"; 
+    }
+    
+    S.addChild(M); S.addChild(M2);
+    P.addChild(M); P.addChild(M2);
+});
+
+function b4run() {
+    $dh.el("test").style.cssText += ";left:100px;top:100px;width:100px;height:100px;";    
+    M.setParams(DHMotion.AnimEffects[effect.value], 1);
+    M2.setParams(DHMotion.AnimEffects[effect.value], 1);
+}
+function run1() {
+    b4run(); S.start();
+}
+function run2() {
+    b4run(); P.start();
+}
+function createOptions() {
+    var s = document.getElementById("effect");
+    for (var p in DHMotion.AnimEffects) {
+        var op = document.createElement("option");
+        op.value = p;
+        op.innerHTML = p;
+        s.appendChild(op);
+    }
+}
+
+</script>    
+ </body>
+</html>

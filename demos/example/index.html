@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>DHTiny example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <script type="text/javascript">
+        // This function will be called after HTML document is loaded
+        $dh.addLoader(function() {
+        	var div = $dh.el("testDIV");
+            $dh.css(div, ";position:absolute;border: solid 2px blue;color:red;background:yellow;");
+
+            alert("Moving to left=100, top=100 ...");
+            $dh.css(div, {top: 100, left: 100});
+            alert("Moving to left=100, top=200 ...");
+            $dh.pos(div, [100, 200]);
+            alert("Moving to left=200, top=200 ...");
+            $dh.pos(div, 200, 200);
+
+            alert("Resizing to width=100, height=100 ...");
+            $dh.size(div,100,100);
+
+            b = $dh.bounds("testDIV");
+            alert("Calculated boundaries: left="+b.left+ ", top="+b.top+", width="+b.width+", height="+b.height);
+            alert("Reseting boundaries to left=10, top=10, width= 200, height =300 ....");
+            $dh.bounds(div, 10, 10, 200, 300);
+        });
+    </script>
+  </head>
+  <body>
+  	<div id ="testDIV">Hello world</div>
+  </body>
+</html>

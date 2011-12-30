@@ -1,0 +1,91 @@
+body {
+	background-color: #888888;
+	overflow: hidden;
+	padding: 0px; margin:0px;	
+}
+/* Rule 3 of ../hal/lib/js/isid/classes/css/HWslidermenu.css */
+.HWsliderWin {
+	BORDER: #EBEADB  2px solid;
+	/*BORDER-TOP: #d0d0d0 2px solid;*/
+	BACKGROUND-COLOR: #ffffff
+}  /* Rule 1 of ../hal/lib/js/isid/classes/css/searchForm.css */
+TABLE.searchForm {
+	TABLE-LAYOUT: auto;
+	FONT-SIZE: 12px;
+	MARGIN: 0px;
+	TEXT-INDENT: 4px;
+	LINE-HEIGHT: 20px;
+	BORDER-COLLAPSE: collapse;
+	BACKGROUND-COLOR: white
+}  /* Rule 6 of ../hal/lib/js/isid/classes/css/searchForm.css */
+TD.searchForm_bottun {
+	BORDER-LEFT: #ffffff 1px solid;
+	BACKGROUND-COLOR: white
+}  /* Rule 5 of ../hal/lib/js/isid/classes/css/searchForm.css */
+TD.searchForm_rightCell {
+	FONT-SIZE: 12px;
+	VERTICAL-ALIGN: top;
+	PADDING-TOP: 6px;
+	TEXT-ALIGN: left
+}  /* Rule 4 of ../hal/lib/js/isid/classes/css/searchForm.css */
+TD.searchForm_normal {
+	BACKGROUND:  #EBEADB ;
+	VERTICAL-ALIGN: top;
+	BORDER-LEFT: #ffffff 1px solid;
+	TEXT-INDENT: 10px;
+	PADDING-TOP: 6px;
+	BORDER-BOTTOM: #ffffff 1px solid;
+	WHITE-SPACE: nowrap;
+	TEXT-ALIGN: left
+}  /* Rule 3 of ../hal/lib/js/isid/classes/css/searchForm.css */
+TD.searchForm_section {
+	BORDER-LEFT: #ffffff 1px solid;
+	HEIGHT: 5px
+}  /* Rule 2 of ../hal/lib/js/isid/classes/css/searchForm.css */
+TD.searchForm_header {
+	FONT-WEIGHT: bold;
+	FONT-SIZE: 12px;
+	/*BACKGROUND: #505050;
+	COLOR: white;*/
+	BORDER: solid 1px #EBEADB ;
+	HEIGHT: 30px;
+	TEXT-ALIGN: left;
+	background: #EBEADB url(../images/hd_row_bg.gif) repeat-x scroll 0 0;
+}
+
+/* Rule 1 of ../hal/lib/js/isid/classes/css/HSearch.css */
+.view {
+	FONT-SIZE: 9pt;
+	COLOR: #333333;
+	BORDER-COLLAPSE: collapse;
+	TABLE-LAYOUT: fixed;
+	background-color: white;
+}  /* Rule 4 of ../hal/lib/js/isid/classes/css/HSearch.css */
+.tds {
+	BORDER: #EBEADB 1px solid;
+	WHITE-SPACE: nowrap;
+}  /* Rule 3 of ../hal/lib/js/isid/classes/css/HSearch.css */
+
+.headerTitle {
+	OVERFLOW: hidden;
+	WHITE-SPACE: nowrap;
+	TEXT-OVERFLOW: ellipsis
+}
+
+.sheetHeader {
+	/*background-color: gray;*/
+	border-collapse: collapse;
+	font-weight:bold;
+	border: solid 1px #EBEADB;
+}
+
+.sheetHeader tr td {
+	border: solid 1px #888899;
+	color: blue;
+	background: #EBEADB url(../images/hd_row_bg.gif) repeat-x scroll 0 0;
+}
+
+.XPanel {
+	background-color: yellow;
+	border: solid 1px red;	
+}

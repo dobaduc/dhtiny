@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="../../../dhtiny.js"></script>
+<script type="text/javascript" src="json2.js"></script>
+<style>
+.MainTable {
+    font-size: 12px;
+    table-layout: auto;
+    border-collapse: collapse;
+    width:800px;
+    height:100%;
+    table-layout:auto;
+    top:0px; left:0px;    
+    font-size: 12px; 
+    margin: 0px auto;padding:0px;
+    border:none;
+    background:#f6fef8;
+}
+.InnerTable {
+	font-size: 12px;    
+    border-collapse: collapse;
+    width:100%;
+    height:100%;
+    table-layout:auto;
+    top:0px; left:0px;
+    font-family: Arial, Tahoma, 'ＭＳ Ｐ明朝';
+    font-size: 12px; 
+    margin: 0px;padding:0px;
+    border:none;background:#f6fef8;
+}
+td {border : solid 1px #d0d0d0;}
+
+.bannerPart { height:70px; text-align:center; background-color: #202030; color:white; background: url(banner.jpg); }
+.BackToGame {font-weight: bold;color: blue; background-color: white;cursor: pointer;text-align:right;}
+.BackToGame:hover {text-decoration:underline;}
+
+.SectionHeader { background-color: #858585; color: white;padding-left: 10px; font-weight : bold; cursor: pointer; font-size: 11pt; }
+.SectionHeader:hover {color:lightyellow;background-color: #b5b5b5;}
+.FieldName { width: 33%; text-align: right;padding-right: 10px;color:#101070;} 
+.FieldValue { text-align: left;} 
+
+.UploadFormLabel { display:block;width: 100%;}
+
+.copyRightPart {
+    text-align:center;
+    background:silver;
+    font-weight: bold;
+}
+
+input[type=text] {width : 350px;}
+.contentPane { background: white; height:100%;}
+.mainBody {
+    text-align: left; padding:4px;margin: 0px;
+}
+
+body {
+    background: #222222; margin:0px;padding:0px;
+    font-family: Arial, Tahoma, 'ＭＳ Ｐ明朝';
+}
+
+</style>
+</head>
+ 
+<body>    
+    <table class="MainTable">
+        <tr>
+            <td colspan="2" class ="bannerPart">
+                <div id="Banner" style="display:block;width:100%;height:100%;padding-top:10px;">
+	                <span style="font-size: 20pt;"><strong>MAGIC PUZZLE GAME</strong></span>
+	                <br />
+	                <span style="font-size: 16pt;"><strong>Configuration</strong></span>
+	                <br />
+	                <br />
+				</div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="BackToGame">
+                 <a href="../index.html">NOW PLAY&nbsp;&gt;&gt;</a>
+            </td>
+        </tr>
+            
+        <!-- Text configuration section -->
+        <tr>
+            <td colspan="2" class="SectionHeader">■ Text messages</td>
+        </tr>
+        <tr>
+            <td class="FieldName">Welcome text</td>
+            <td class="FieldValue">
+                <input type="text" value="Magic puzzle game" name="welcometxt"/>
+            </td>
+        </tr>        
+        <tr>
+            <td class="FieldName">Game over text</td>
+            <td class="FieldValue">
+                <input type="text" value="Time is up!" name="gameovertxt"/>
+            </td>
+        </tr>        
+        <tr>
+            <td class="FieldName">Level text</td>
+            <td class="FieldValue">
+                <input type="text" value="Level" name="leveltxt"/>
+            </td>
+        </tr>        
+        <tr>
+            <td class="FieldName">Time text</td>
+            <td class="FieldValue">
+                <input type="text" value="Time" name="timetxt"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="FieldName">Pass level text</td>
+            <td class="FieldValue">
+                <input type="text" value="Pass level" name="passleveltxt"/> (## : current level)
+            </td>
+        </tr>
+        <tr>
+            <td class="FieldName">Finish all levels text</td>
+            <td class="FieldValue">
+                <input type="text" value="Finished all level" name="finishalltxt"/>
+            </td>
+        </tr>
+        <!-- END -->
+        
+        <!-- Screen settings -->
+        <tr>
+            <td colspan="2" class="SectionHeader">■ Screen theme</td>
+        </tr>
+        <tr>
+            <td class="FieldName">Background image</td>
+            <td class="FieldValue">
+                <select name="backgroundimg"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="FieldName">Loading image</td>
+            <td class="FieldValue">
+                <select name="loadingimg"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="FieldName">Star button image</td>
+            <td class="FieldValue">
+                <select name="startbutimg"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="FieldName">Star button image (on mouse over)</td>
+            <td class="FieldValue">
+                <select name="startbutoverimg"></select>
+            </td>
+        </tr>
+        
+        <!--tr>
+            <td class="FieldName">Cursor</td>
+            <td class="FieldValue">
+                <select name="cursorcur">
+                    <option value="LCDScreen.gif">Hand.cur</option>
+                    <option value="Dragger.gif">Dragger.ani</option>
+                </select>
+            </td>
+        </tr -->
+        <!-- END -->
+        
+        <!-- Game level settings -->
+        <tr>
+            <td colspan="2" class="SectionHeader">■ Game level</td>
+        </tr>
+        <tr>
+            <td class="FieldName">Max level</td>
+            <td class="FieldValue">
+                <select name="maxlevel"></select>
+            </td>
+        </tr> 
+        <tr>
+            <td class="FieldName">Level parameters </td>
+            <td class="FieldValue">
+            	<table class="InnerTable">
+            		<tr>
+            			<td class="FieldName">Choose level </td>
+						<td  class="FieldValue">
+							<select name="currentlevel"></select>
+						</td>
+					</tr>					
+                	<tr>
+                		<td  class="FieldName">Number of piece on row</td>
+						<td  class="FieldValue">
+							<select name="npieceonrow"></select>
+						</td>
+					</tr>
+                	<tr>
+                		<td  class="FieldName">Number of piece on column</td>
+						<td  class="FieldValue">
+							<select name="npieceoncol"></select>
+						</td>
+					</tr>
+					<tr>
+                		<td  class="FieldName">Available time (seconds)</td>
+						<td  class="FieldValue">
+							<select name="availabletime"></select>
+						</td>
+					</tr>
+                	<tr>
+                		<td  class="FieldName">Image/video used for puzzle:</td>
+						<td class="FieldValue">
+							<select name="puzzlemedia"></select>
+						</td>
+					</tr>
+					<tr>
+                		<td  class="FieldName">Image/video on finish:</td>
+						<td class="FieldValue">
+							<select name="fullpuzzlemedia"></select><br />(Leave blank to use the video/image in puzzle)
+						</td>
+					</tr>
+				</table>
+            </td>            
+        </tr>                
+        <!-- END -->
+        
+        <!-- File upload -->
+        <tr>
+            <td colspan="2" class="SectionHeader">■ Media upload</td>
+        </tr>
+        <tr>
+            <td class="FieldName">Upload video/image files</td>
+            <td class="FieldValue" style="padding-left: 5px;">
+                <form name="upload_form" id ="upload_form" action="fileupload.php" target="upload_iframe" method="post" enctype="multipart/form-data">
+			    	<input type="hidden" name="fileframe" value="true">
+					<span class="UploadFormLabel">Select file</span>
+					    <input type="file" name="upload_file" id="upload_file"> <br/>
+					<span class="UploadFormLabel">Set file name on server</span>
+					    <input style="width:200px;" type="text" name="upload_fsvname" id="upload_fsvname"> (Optional)
+					<br />
+					<input type="button" onclick="$dh.startUpload()" value="Upload"/>
+				</form>
+				<iframe name="upload_iframe" style="width: 400px; height: 100px; display:none;"></iframe>
+			    <span id="upload_status"></span>&nbsp;				
+            </td>
+        </tr>        
+        <!-- END -->
+        
+        <tr class="Final">
+            <td colspan="2" align="center"><input type="button" id ="savesettingbut" value="Save settings" onclick="$dh.onSubmitSettings()" /></td>
+        </tr>
+		<tr class="Final">
+            <td colspan="2" align="center">
+            	<span id="savesetting_status"></span>
+			</td>
+        </tr>
+        <tr class ="copyRightPart">
+            <td colspan="2">Copyright 2009 (c) Cafeworx - All rights reserved</td>
+        </tr>
+    </table>
+    <form name="setting_form" id ="setting_form" action="fileupload.php" target="setting_iframe" method="post" enctype="multipart/form-data" style="display:none;">
+        <input type="hidden" name="settingframe" value="true">
+        <iframe name="setting_iframe" style="width: 400px; height: 100px; display:none;"></iframe>
+        <div id="settingvaluecontainer"></div>
+        <input type="hidden" id="settingdatas" name="settingdatas" value="">
+	</form>
+<script type="text/javascript" src="configdemo.js"></script>
+</body>
+</html>

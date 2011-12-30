@@ -1,0 +1,203 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Dynablo demo</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <style type="text/css">
+        body {margin:0px; padding: 0px; overflow:hidden;background:#838383;}
+        #Container {position:absolute;top:50px;left:30%;width:400px;height:400px;background:white;border:solid 2px black;}
+        #player {background:black;position:absolute;bottom:0px;width:100%;height:25px;}
+        .hslider {background-color:white;position:absolute;overflow:visible;height:5px; top:10px; left: 65px; }
+        .pointer {background-color:#cc5555; border: solid 1px red; cursor: pointer;}
+        .progressbar {background-color:#993333;}
+        
+        #percentage {position:absolute; right: 0px; top:0px; height:25px;line-height: 27px;color: yellow; width:35px; font-size: 12px;}
+        #currentTime {text-align: right;}
+        #duration {text-align: left;}
+    </style>
+</head>
+<body>
+<div id="Container" >
+    <div id="test1" style="position:absolute;top:100px;left:100px;width:50px;height:50px;background:red;"></div>
+    <div id="test2" style="position:absolute;top:100px;left:250px;width:50px;height:50px;background:green;"></div>
+    <div id="test3" style="position:absolute;top:250px;left:250px;width:50px;height:50px;background:blue;"></div>
+    <div id="test4" style="position:absolute;top:250px;left:100px;width:50px;height:50px;background:purple;"></div>
+    <div id="test5" style="position:absolute;top:175px;left:175px;width:50px;height:50px;background:magenta;border:solid 1px yellow;">
+        <img id="image5" src="http://www.davis.k12.ut.us/schools/arrow/images/0906FE5AB1314CF69C4C3A06FE9290EE.jpg" style="position:absolute;width:100%;height:100%;"></img>
+    </div>
+   
+    <div id="player">
+        <div id="percentage">
+            <!-- span id="currentTime"></span>/
+            <span id="duration"></span>s -->
+        <div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$dh.Require(["ctrl/dynablo/dynablo", "ctrl/animitem", "ctrl/slider", "ctrl/imgbutton"]);
+
+var S, Slider, VSlider, EFF =  DHMotion.AnimEffects.bounceEaseOut;
+var SWIDTH = 280, SHEIGHT=400;
+var animItems = [];
+$dh.addLoader(function() {
+    $dh.opac($dh.el("Container"), 0);
+    $dh.opac($dh.el("image5"), 0);
+    
+    createSlider();
+    createAnimItems();
+    createStory();
+    createButtons();
+
+    startTheShow();
+});
+
+function startTheShow() {
+    // Show player
+    M = new DHMotion($dh.el("Container"), DHMotion.AnimEffects.regularEaseIn, 1.5, function(val){
+        $dh.opac($dh.el("Container"), Math.floor(val));        
+    });
+  
+    M.start();
+}
+
+function createSlider() {
+     // Draw slider
+    Slider = new DHSlider($dh.el("player"), {
+        className: "hslider",
+        width: SWIDTH,
+        minval:0, maxval:100,
+        type: "horizontal",
+        pointerProps: {
+            className: "pointer",
+            mintop: -5, minleft:0, maxleft: SWIDTH- 10,
+            width: 10, height: 15, top: -5, left:10
+        },
+        progressProps: {className: "progressbar"}
+    });
+    // Set sliding event
+    Slider.addEv("onslide", function(sender){
+        $dh.el("percentage").innerHTML = Math.round(sender.currentval)+"%";
+        if (S.locked) return;
+        S.seek(sender.currentval/(sender.maxval - sender.minval));
+    });
+}
+
+function createButtons() {
+    var btplay = new DHImgButton($dh.el("player"), {position:"absolute", left: 8, top: 4, width: 20, height:20, cursor:"pointer",
+        image: "images/play.png", currentimg: "play"
+    });
+    btplay.changeImage = function(img) {
+         this.currentimg = img;
+         this.setProp("image", "images/"+img+".png");
+         this.setProp("title",img);
+    }
+    btplay.addEv("onclick",  function() {
+       switch (this.currentimg) {
+           case "play":
+               this.changeImage("pause");
+               S.locked = true;
+               if (!$dh.isNil(S.getActionStatus())) {
+                    if (S._currentTime < S.getDuration()) {
+                        document.title=" Resume"
+                        S.resume();
+                    }                    
+               }
+               else {
+                   document.title="Start"
+                   S.start();
+               }
+               break;
+           case "pause":
+               this.changeImage("play");
+               S.locked = false;
+               S.stop();
+               break;
+           case "restart":
+               this.changeImage("pause");
+               S.locked = false;
+               S.restart();
+               break;
+       }
+    });
+    S.addEv("onstop", function() {
+        btplay.changeImage("play");
+    });
+    S.addEv("onfinish", function() {
+        btplay.changeImage("restart");
+    });
+}
+
+function createAnimItems() {
+    animItems.push(new DHAnimItem({
+      _canvas: "test1", duration: 1, exeFunc: EFF, visible: true,  animDelta: { width:100 }
+    }));
+    animItems.push(new DHAnimItem({
+        _canvas: "test2", duration: 1, exeFunc: EFF, visible: true, animDelta: { height:100 }
+    }));
+    animItems.push(new DHAnimItem({
+        _canvas: "test3", duration: 1, exeFunc: EFF, visible: true, animDelta: { width:100, left: -100 }
+    }));
+    animItems.push(new DHAnimItem({
+        _canvas: "test4", duration: 1, exeFunc: EFF, visible: true, animDelta: { top: -100, height:100 }
+    }));    
+    animItems.push(new DHAnimItem({
+        _canvas: "test5", duration: 1, exeFunc: EFF, visible: true, animDelta: { width:100, height:100,left:-50, top:-50, opacity: -20 }
+    }));
+    animItems[4].addEv("onrun", function(sender){
+        $dh.opac($dh.el("image5"), sender.getCurrentVal());
+    });
+
+    // Text
+    animItems.push(new DHAnimItem($dh.el("Container"), {
+        cssText: "position: absolute; visibility: hidden; textAlign: center; overflow:visible;color:red;font-weight:bold",
+        left: 160, top: -10,
+        width: 4, height: 4, fontSize: 5,
+        innerHTML: "COOL SMILE p(^_^)/3",
+        duration: 1, animDes: {width: 220, left: 120, top: 50, fontSize: 18},
+        onAnimStart: function() {
+            this.show(true);
+        },
+        onAnimation: function() {
+            this.show(this.fontSize > 6);
+        }
+    }));
+
+}
+
+function createStory() {
+    // Create story
+    S = new dynablo.story();
+    S.addEv("onrun", function(sender) {      
+        Slider.seek( sender.getProgress());
+    });
+
+    for (i =0 ; i < animItems.length; i++)
+        S.addChild(animItems[i], i);
+
+    S.addEv("onstop", function() {        
+        S.locked = false;
+    });
+    S.addEv("onrestart", function() {
+        animItems[5].show(false);
+    })
+}
+
+
+/*Slider = new DHSlider(document.body, {
+    cssText: "position:absolute;",
+    top: 30, left: 10, width: 25, height: SHEIGHT, backgroundColor: "green",
+    minval:0, maxval:100,
+    type: "vertical",
+    pointerProps: {
+        mintop: 5, maxtop: SHEIGHT - 15, minleft:5, maxleft:5,
+        width: 15, height:10, top: 10, left: 5, backgroundColor: "red", cursor: "pointer"
+    }
+});
+VSlider.addEv("onslide", function(sender){
+    if (S.locked) return;
+    S.seek(sender.currentval/(sender.maxval - sender.minval));
+});*/
+</script>    
+ </body>
+</html>

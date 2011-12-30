@@ -1,0 +1,36 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+</head>
+<body>
+ <div class="DemoHeader">
+    <span class="DHTinyTitle">{&nbsp;dhtiny&nbsp;}&nbsp;</span>
+    <span class="DemoTitle"> >&nbsp;&nbsp;Simple image button </span>
+    <div class="CopyrightPart">Copyright&nbsp;&copy;&nbsp;KeyboardDigger</div>
+</div>
+
+<script type="text/javascript">
+$dh.Require(["ctrl/imgbutton","ctrl/richbutton"]);
+$dh.addLoader(function() {
+        var but = new DHImgButton(document.body, {position:"absolute", left: 200, top: 180, width: 47, height:47,
+            image: "images/but1.gif", image_over: "images/but2.gif", image_down: "images/but3.gif", cursor: "pointer"
+        });
+        but.addEv("onclick", function() {
+            alert("You clicked the image button");
+        });
+    
+    
+        var but2 = new DHRichButton(document.body, {
+            position:"absolute", left: 200, top: 130, width: 125, height:25,
+            image: "images/but1.gif", image_over: "images/but2.gif", image_down: "images/but3.gif",
+            imgWidth: 55, imgPadding:10, text: "<b>HOW ARE YOU?</b>", lineHeight:"100%",
+            cursor: "pointer"
+        });
+        but2.addEv("onclick", function() {
+            alert("You clicked on the image button with label");
+        });
+});
+</script>    
+ </body>
+</html>

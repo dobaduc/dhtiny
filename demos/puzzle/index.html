@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <script type="text/javascript" src="swfobject.js"></script>    
+    <script type="text/javascript" src="demo.js"></script>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+    
+    <style type="text/css">
+        body {background: #202020;width:100%; height:100%;margin:0px;padding:0px;}
+        .LabelContainer { font-weight: bold; font-family:Tahoma; font-size: 16px;color:White;}
+        .Label {  font-family:Tahoma; font-size: 16px;color:yellow; position:relative;width:50px;} 
+    </style>    
+</head>
+<body>
+<div style="position:relative;padding:0px;margin:0px;width:100%;height:100%;text-align:center;">
+
+<div class="DemoHeader">
+    <span class="DHTinyTitle">{&nbsp;dhtiny&nbsp;}&nbsp;</span>
+    <span class="DemoTitle"> >&nbsp;&nbsp;Video puzzle game  _(^o^)// </span>
+    <div class="CopyrightPart">Copyright&nbsp;&copy;&nbsp;KeyboardDigger</div>
+</div>
+    
+<div id="GameContainer" style="position:relative;overflow:hidden;padding:0px;margin:0px auto;width:800px;height:100%;text-align:left;top:88px;">
+  <div id="levelarea" class="LabelContainer" style="position:absolute;top:10px;left:0px;">
+    <span id="levellabel"></span>&nbsp;&nbsp;&nbsp;<span id="currentlevel" class="Label"></span>
+  </div>  
+  <div id="timearea" class="LabelContainer" style="position:absolute;top:10px;right:10px;">
+    <span id="timelabel"></span>&nbsp;&nbsp;&nbsp;&nbsp;<span id="currenttime" class="Label"></span>
+  </div>
+</div>  
+</div>
+
+<!--  div id="wrapper" style="position:absolute; left:64px; top:128px; width: 270px; height:196px; background-color:#CCCC00;">
+ <div id="placeholder1"></div>
+</div -->
+
+<script type="text/javascript">
+/*$dh.addLoader(function(){
+	 var flashvars = {
+			 file:"videos/FitsCM-forPuzzle.swf", 
+             autostart:"false",
+             volume:0,
+             playerready : "onPlayerReady",
+             controlbar: "none",
+             icons:"false"
+     }
+     var params = {
+             allowfullscreen:"false",
+             allowscriptaccess:"always",
+             play:"false",
+             wmode:"opaque"
+     }
+     var attributes = {
+             id:"player1",  
+             name:"player1"
+     }
+     swfobject.embedSWF("player/player-viral.swf", "placeholder1", "270", "196", "9.0.115", false, flashvars, params, attributes);
+});
+function onPlayerReady(obj) {
+	player = document.getElementById(obj.id);
+	player.sendEvent("PLAY");//load("videos/FitsCM-forPuzzle.swf");
+	//addPlayerListeners(obj.id);
+}
+
+function addPlayerListeners(ID) {
+	player = document.getElementById(ID);
+	if (player) { 
+		player.addModelListener("STATE", "playerStateListener");
+	} else {
+		$dh.setTime(window,"addPlayerListeners",[ID],100);
+	}
+}
+
+function playerStateListener(obj) {
+	 //IDLE, BUFFERING, PLAYING, PAUSED, COMPLETED
+	currentState = obj.newstate; 
+	previousState = obj.oldstate; 
+
+	document.title = currentState;
+
+	if ((currentState == "COMPLETED")&&(previousState == "PLAYING")) {
+		document.location.href="http://www.longtailvideo.com/players/jw-flv-player/"; 
+	}
+
+}*/
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Demo menubar</title>
+<link href="../../../css/menubar.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../dhtiny.js"></script>
+<script type="text/javascript" src="../../../../dhtiny/demos/common/dhtinydemo.js"></script>
+
+</head>
+
+<body>
+
+<div id="Div1" class="menu_top">
+	<span >DynaBlo</span>
+  	<a href="">Home</a>
+    <a href="">Share</a>
+    <a href="">Profile</a>
+    <a href="">Design</a>
+</div>
+
+<div id="Div2" class="menu_left">
+	<span>DynaBlo</span>
+    <a href="">Home</a>
+    <a href="">Share</a>
+    <a href="">Profile</a>
+    <a href="">Design</a>
+</div>
+<script type="text/javascript">
+$dh.Require(["util/dragmanager"]);
+bodysize = $dh.bodySize();
+var div1Size = $dh.size($dh.el("Div1"));
+var div2Size = $dh.size($dh.el("Div2"));
+
+$dh.addLoader(function() {
+	
+    $dh.disableSelect(document.body);
+	$dh.dragger.setDragTarget(document.getElementsByTagName("span")[0], $dh.el("Div1"));
+	$dh.dragger.setDragTarget(document.getElementsByTagName("span")[1], $dh.el("Div2"));
+    $dh.dragger.setDrag($dh.el("Div1"), { mode: "MOVE", noMask: true, maxtop:  bodysize.height/3, maxleft: bodysize.width - div1Size.width});
+    $dh.dragger.setDrag($dh.el("Div2"), { mode: "MOVE", ghostDrag: false, maxtop: bodysize.height - div2Size.height, maxleft: bodysize.width/3 });
+});
+</script>
+</body>
+</html>

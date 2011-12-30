@@ -1,0 +1,28 @@
+{	
+	welcometxt: "MAGIC puzzle game",
+	gameovertxt: "Time is up!",	
+	leveltxt: "LEVEL:",
+	timetxt: "TIME:",
+	passleveltxt: "You've past level ##",
+	finishalltxt: "You've won all games!",
+	
+	backgroundimg:"images/background.gif",	
+	loadingimg: "images/loading.gif",	
+	startbutimg: "images/butstart.gif",
+	startbutoverimg: "images/butstartover.gif",
+	cursorcur: "cursors/hmove.cur",
+	
+	maxlevel: 3,
+	leveldata: [{},
+		{r: 2, c: 2, t: 60,  v:"images/gamepic1.jpg", fullv: "videos/test3.swf"},
+		{r: 2, c: 2, t: 60,  v:"videos/test0.swf"},
+		{r: 2, c: 3, t: 60,  v:"videos/test0.swf"},
+		{r: 3, c: 3, t: 120, v:"videos/test2.swf"}, 
+		{r: 3, c: 4, t: 180, v:"videos/test1.swf"},
+		{r: 4, c: 4, t: 240, v:"videos/test3.swf"},
+		{r: 4, c: 5, t: 360, v:"videos/test4.swf"},
+		{r: 5, c: 5, t: 480, v:"videos/test5.swf"},
+		{r: 5, c: 6, t: 480, v:"videos/test5.swf"},
+		{r: 6, c: 6, t: 480, v:"videos/test5.swf"}
+	]	
+}

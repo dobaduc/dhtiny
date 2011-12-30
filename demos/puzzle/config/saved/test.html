@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<script type="text/javascript">
+    	/* This function is called when user selects file in file dialog */
+		function jsUpload(upload_field){	
+			var re_text = /\.gif|\.jpg|\.png|\.swf|\.avi|\.flv|\.zip/i;
+			var filename = upload_field.value;
+			/* Checking file type */
+			if (filename.toLowerCase().search(re_text) == -1)    {
+				alert("File does not have allowed (gif|jpg|png|swf|avi|flv) extensions");
+				upload_field.form.reset();
+				return false;  
+			}
+			upload_field.form.submit();    
+			document.getElementById('upload_status').value = "uploading file...";
+			upload_field.disabled = true;
+			return true;
+		}
+		</script>
+	</head>
+<body>
+<form action="test.php" target="upload_iframe" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="fileframe" value="true">
+	<label for="file">Select file</label>
+    <input type="file" name="file" id="file" onchange="jsUpload(this)">
+</form>
+	File name: <input type="text" name="filenamei" id="filenamei" value="none" disabled>
+    Status : <input type="text" name="upload_status" id="upload_status" value="not uploaded" size="64" disabled>
+	<iframe name="upload_iframe" style="width: 400px; height: 100px; display:none;"></iframe>
+
+</body>
+</html>

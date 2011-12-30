@@ -1,0 +1,288 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DHTiny introduction</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+<style type="text/css">     
+.DHAnimPlayer {
+    position: absolute;
+    top:20px;
+    left: 150px;
+    margin: 0px auto;
+    background:white;
+    border: solid 3px #202020;
+}
+
+.contentArea {font-family: Verdana;}
+.controller {background: #303030;}
+
+.slider {background-color:white; border: solid 1px black;}
+.pointer {background-color:#cc5555; border: solid 1px red; cursor: pointer;}
+.progressbar {left:10px; top: 20px; height:8px; width:80%;;background-color:#993333;}
+
+
+.percentage {color:yellow;}
+
+#currentTime {text-align: right;}
+#duration {text-align: left;}
+
+.LeftTitle { position:absolute;top:0px;left:0px;width:400px; padding:16px;font-family: Georgia; font-size: 22px; color:#f3333c;}
+
+.SlideMaster {
+    position:absolute;left:0px;top:0px;width:100%;height:100%;text-align:center;
+}
+.SlideTitle {
+    font-size:40px;
+    text-align: center;
+}
+</style>
+    
+</head>
+<body>
+<script type="text/javascript" src="../common/dhtinydemo.js"></script>
+<script type="text/javascript">
+initDHTinyDemo("Library introduction");
+
+$dh.Require(["ctrl/dockpanel", "ctrl/animplayer"]);
+$dh.addLoader(function(){
+    SD.init();
+});
+
+SD = {
+    currentPage: 1,
+    init: function() {
+        //SD.createEditor();
+        SD.createPlayer();
+        SD.createSlideMaster();
+        SD.showPage(0);
+
+        SD.startTheShow();
+    },
+
+    startTheShow: function() {
+        SD.player.draw({ height: 40, backgroundColor: "#000055"});
+        SD.player.draw({ opacity: 100, height: 700, backgroundColor: "white"}, 2.5);
+    },
+    
+    createEditor: function() {
+        SD.editor = new DHDockPanel($dh.el("DemoBody"), {
+            cssText: "top:10px;background:#efefef;border-right:solid 2px #324242;overflow:hidden;z-index:10;",
+            width: 350,
+            height: "100%",
+            dockpos: "left",
+            dautohide: 10,
+            innerHTML: "<div class='LeftTitle'>:: Raw content editor ::</div><button>Update</button>"
+        });
+     
+        SD.editor.addEv("onanimation", function() {
+            if (this.height< 2) {
+                this.show(false);               
+            }
+            else this.show(true);
+        });
+    },
+    createPlayer: function() {
+        var WW = 900, WH = 700;
+        var BW = 50, BH= 30;
+        var CH = 40, SP = 30;
+        SD.player = new DHAnimPlayer("DemoBody", {
+            controllerHeight: CH,
+            opacity: 10, cursor:"pointer",
+            width: WW, height: WH,
+            sliderProps: {
+                //left: 90, width:360, height:8, top: 22,
+                visibility: "hidden"
+                //pointerProps: {mintop: -5, top:-5, height:19, width: 10}
+            },
+
+            percentageProps: {top: CH/2 -10, left:WW/2 -10, fontSize: 14, width: 10},
+            
+            buttonWidth: BW, buttonHeight: BH, // this common prop. wil be overwitten by specified button size
+            imagePath: "images",
+            buttonProps: [
+                // Button play
+                {position:"absolute",
+                    left: WW/2 + SP , top: (CH - BH)/2, width: BW, cursor:"pointer",
+                    //image: "images/play.png",
+                    images:[
+                        {   src: "play.png",
+                            handler: function(animplayer, buttonIdx) {
+                                SD.showNext();
+                            }
+                        }                  
+                    ]
+                },
+                // Button stop/ close
+                {position:"absolute",
+                    left: WW/2 - SP - BW , top: (CH - BH)/2, width: BW, cursor:"pointer",
+                    //image: "images/play.png",
+                    images:[
+                        {   src: "back.png",
+                            handler: function(animplayer, buttonIdx) {
+                                SD.showPrev();
+                            }
+                        }
+                    ]
+                }
+            ]
+        });
+        $dh.disableSelect(SD.player.canvas);
+    },
+
+    createSlideMaster: function() {
+        var ct = SD.player.contentArea.canvas;
+        var TH = 70;
+        SD.SlideMaster = new DHRichCanvas(ct, {
+            className: "SlideMaster",
+            style: "position:absolute;left:0px;top:240px;width:100%;height:100%;text-align:center;font-size:35px;color:#0000fa;line-height:55px;font-weight:bold;"
+        });
+        
+        SD.SlideTitle = new DHRichCanvas(ct, {
+            className: "SlideTitle",
+            style: "position:absolute;left:0px;top:0px;width:100%;color:#de1111;text-align:center;font-size:32px;border:solid 1px silver;padding-top:15px;font-weight:bold;",
+            height: TH
+        });
+        
+        SD.SlideContent = new DHRichCanvas(ct, {
+            className: "SlideContent",
+            style: "position:absolute;left:0px;width:100%;padding-top:15px;padding-left:40px;color:#991010;font-size:20px;",
+            top: TH+ 20
+        });
+    },
+    showPage: function(idx) {
+        SD.currentPage = idx;   
+        var data = Pages[idx];
+
+        SD.SlideTitle.show(data.master ? false: true);
+        SD.SlideContent.show(data.master ? false: true);
+        SD.SlideMaster.show(data.master ? true: false);
+
+        if (data.title) SD.SlideTitle.setProps(data.title);
+        if (data.content) SD.SlideContent.setProps(data.content);
+        if (data.master) SD.SlideMaster.setProps(data.master);
+
+        SD.player.percentage.setProp("innerHTML", (SD.currentPage+1)+"/"+SD.nPage);
+    },
+    showNext: function() {
+        if (SD.currentPage >= SD.nPage -1) return;
+        SD.showPage(SD.currentPage+1);
+    },
+    showPrev: function() {
+        if (SD.currentPage <= 0) return;
+        SD.showPage(SD.currentPage-1);
+    },
+    genList: function(order, items) {
+        tag = order ? "ol": "ul";
+        str = "<"+tag+">";
+        for (i =0; i < items.length; i++)
+            str += "<li  style='margin-right:30px;margin-top:10px;word-wrap: break-word;'><span>"+ items[i] + "</span></li>";
+        str +="</"+tag+">";
+        return str;
+    }
+}
+
+// Following data should be retreived from DB
+Pages = [
+    {
+        master: {
+            innerHTML: "INTRODUCTION TO DHTINY</br>Open source javascript library<br/><br/><br/>"+
+                       "<span style='color:#dd3333;font-size:24px;'>__ Tokyo 2011/06/11 __</span>"
+        }
+    },
+    {
+        title:   {innerHTML: "Agenda"},
+        content: {innerHTML: SD.genList(true, [
+                    "What is a javascript library?",
+                    "Background",
+                    "DHTiny's main features",
+                    "API Document & Demos",
+                    "DHTiny development team",
+                    "Closing"
+                 ])}
+    },
+    {
+        title:   {innerHTML: "1. What is a javascript library?"},
+        content: {
+            innerHTML: SD.genList(false, [
+                            "Javascript is primarily run on web browsers in order to provide enhanced user interfaces and dynamic websites.",
+                            "A JavaScript library is a set of pre-written JavaScript functions and components which help to develop web applications easier"
+                        ])
+        }
+    },
+    {
+        title:   {innerHTML: "2. Background"},
+        content: {
+            innerHTML: "<b>Building a javascript library from scratch, why?</b><br/>" +
+                        SD.genList(false, [
+                            "Dislike huge libraries (many unnecessary things, slow loading)",
+                            "Need an easier way to work with not just DOM but also OOP",
+                            "Love to create something to check my own skill"
+                        ]) +
+                        "<b>Brief history:</b><br/>"+
+                        SD.genList(false, [
+                            "Started writing a JS library since July, 2008",
+                            "In August, 2008: released the first version and named it \"DHTiny\"",
+                            "January 2009: Added a set of demos to express some ideas",
+                            "Since May, 2009: temporarily 'forgot' about it due to many reasons",
+                            "2011: Decided to bring it back to life"
+                        ])
+        }
+    },
+    {
+        title:   {innerHTML: "3. Main features"},
+        content: {
+            innerHTML: "<b>DHTiny supports:</b>"+
+                        SD.genList(false, [
+                            "Cross browser DOM manipulating (Tested on major browsers: IE, Firefox, Chrome, Safari, Opera)",
+                            "Simple and convenient Object Oriented Programming support",
+                            "Manually & dynamically including necessary modules only at run time",
+                            "A set of ready-to-use classes and demos",
+                            "Comming soon: 'dynamic' API documentation with DHTiny inside"
+                        ])+
+                        "<b>Moreover, most of DHTiny's modules are very small compared to normal ones!</b>"
+        }
+    },    
+    {
+        title: {innerHTML: "4. API document & Demos"},
+        content: {
+            innerHTML:  SD.genList(true, [
+                            "API document: <a href='http://dhtiny.assembla.me/doc/index.html'>HERE</a> (Will be built with DHTiny soon)",
+                            "Some small ideas through demos: <a href='http://dhtiny.assembla.me/demos/index.html'>HERE</a><br>"+
+                            "(Show these: Shopping, Webtop, FlashPuzzle, Dynablo, CoreDemo)"
+                        ])
+        }
+    },
+    {
+        title: {innerHTML: "5. DHTiny development team"},
+        content: {
+            innerHTML:  SD.genList(true, [
+                            "Home page: <b>https://sites.google.com/site/dhblogprj/</b>",
+                            "Main activities: Online/offline technical discussion, open source product development",
+                            "Number of members: 30",
+                            "Progressing projects: Dynamic Blog, Smart cart UI,..."
+                        ])
+        }
+    },   
+    {
+        title:   {innerHTML: "6. Closing"},
+        content: {
+            innerHTML: "<b>Summary:</b>" +
+                        SD.genList(false, [
+                            "DHTiny does not have as many functions as famous ones (jQuery, Prototype,...),"+
+                                "<br>but its existing features now are enough to develop complex RIA (rich internet application)",
+                            "It's very easy to add new features, so it can be improved",
+                            "Its source codes may be old, but we can refine them quickly"
+                        ])+
+                        "<br>"+
+                        "<b>&nbsp;&nbsp;&nbsp;SO I NEED YOUR HELP TO IMPROVE DHTINY!</b>"
+        }
+    },
+    {
+        master: {innerHTML: "Thank you for your attention!"}
+    }
+];
+SD.nPage = Pages.length;
+</script>
+</body>
+</html>

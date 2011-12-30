@@ -1,0 +1,21 @@
+Crash Message:
+
+   Can't locate object method "DHTiny4NDJavaScriptFile" via package "NaturalDocs::Builder::FramedHTML" at D:/Eclipses/workspace/dhtiny_document/WebContent/naturaldocs/Modules/NaturalDocs/Builder/FramedHTML.pm line 105.
+
+Current Action:
+
+   Building D:\Eclipses\workspace\dhtiny_document\WebContent\dhtiny\util\animation.js
+
+Natural Docs version 1.51
+Perl version 5.10.1 on MSWin32
+
+Command Line:
+
+   -i dhtiny -o FramedHTML D:\WorkSpace\dhtiny_assembla\trunk\doc -p temp -ro -hl -do
+
+Stack Trace:
+
+   NaturalDocs::Error::CatchDeath, called from
+   NaturalDocs::Builder::FramedHTML::BuildFile, line 103, called from
+   NaturalDocs::Builder::Run, line 222, called from
+   (eval), line 340 of D:/Eclipses/workspace/dhtiny_document/WebContent/naturaldocs/NaturalDocs

@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>Calendar demo</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+    <link rel="stylesheet" href="../../res/css/calendar.css" />
+<style type="text/css">
+  body {margin:0px; padding: 0px; overflow:hidden; background:#A3A3A3;}
+</style>
+
+<script type="text/javascript" src="../common/dhtinydemo.js"></script>
+<script type="text/javascript">
+/** Write demo title */
+initDHTinyDemo("Calendar demo");
+
+$dh.Require(["ctrl/calendar","util/dragmanager"]);
+
+$dh.addLoader(function() {
+    $dh.addCh("DemoBody", "DemoWrapper");
+    CAL = new DHCalendar("CalendarContainer", {
+        width: 180, height: 160, currentmonth: "2011/05", daybarheight: 20, lang: "en_us",
+        className: "DHCalendar"
+    });
+    $dh.el("CurrentMonth1").innerHTML=CAL.currentmonth;
+    CAL.addEv("onafterdraw", function(sender){ $dh.el("CurrentMonth1").innerHTML = sender.currentmonth;});
+    CAL.addEv("onselected", function(sender, date){alert("Selected "+ date);});
+    
+    // Popup calendar
+    PCAL= new DHCalendar(document.body, {
+        width: 180, height: 160, currentmonth: "2011/05", daybarheight: 20, lang: "en_us",
+        navibarheight: 20, navibutheight: 20, navibutwidth: 30, monthlbheight: 20, monthlbwidth: 70,
+        className: "DHCalendar", popupmode: true, maskProps: {cssText: "background: #040404;"}, hasmask: "true"
+    });
+    PCAL.addEv("onselected", function(sender, date){
+        this.show(false);
+        $dh.el("PopupTarget").innerHTML= "Drag me -- "+ date;
+    });
+    
+	// Drag for demo
+    $dh.dragger.setDrag($dh.el("PopupTarget"), { mode: "MOVE", noMask: true});
+});
+
+function showPCal(targetId) {
+    PCAL.show(true, $dh.el(targetId));
+}
+</script>
+</head>
+<body>
+
+<div id="DemoWrapper">
+    <div style="position:absolute;top:10px;left:400px;overflow:visible;">
+        Simple calendar without navigation bar<br/>
+        <button onclick="CAL.goPrevious();"><<</button>
+            <span id="CurrentMonth1">--</span>
+        <button onclick="CAL.goNext();">>></button><br/><br/>
+        <div id="CalendarContainer" style="position:relative;"></div>
+    </div>
+    <button id="PopupTarget" style="position:absolute;left:340px;top:270px;width:220px;" onclick="showPCal('PopupTarget')">Drag me -- </button>
+</div>
+</body>
+</html>

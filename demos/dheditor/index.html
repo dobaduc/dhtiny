@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Text editor demo</title>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>    
+<script type="text/javascript" src="../../dhtiny.js"></script>
+ <link rel="stylesheet" href="../common/dhtinydemo.css" />
+ <script type="text/javascript" src="../common/dhtinydemo.js"></script>
+<style type="text/css">
+    .editor-button { width:16px; height:16px; display:block; float:left;border: solid 1px #282828; background-color: #eaeaea;}
+    .editor-button:hover { border: solid 1px green; background-color: #88aa88;}
+    #idContent { border:7px solid gray;background: white;}
+    #editor-toolbar { background-color:gray; border:7px solid gray; width:100%;}
+</style>
+<script type="text/javascript">
+initDHTinyDemo("Simple text editor");
+
+var isHTMLMode = false;
+
+$dh.addLoader(function(){
+    
+    idContent.document.designMode = 'On';
+    idContent.focus();
+
+    commands = (//"cut|copy|paste|"+
+               "bold|italic|underline|underline-double|strike|lowercase|"+
+               //"indent|outdent|code|image|"+
+               "justifyleft|justifycenter|justifyright").split("|");
+
+    tb = $dh.el("editor-toolbar");
+    for (var i =0 ; i < commands.length; i++) {
+        but = $dh.New("img", {
+            parentNode: tb,
+            className: "editor-button",
+            src: "images/edit-" + commands[i]+".png",
+            title: commands[i],
+            onmousedown: function() { $dh.opac(this, 30); },
+            onmouseup: function() { $dh.opac(this, 100); },
+            onclick: function() {
+                if (isHTMLMode) {
+                    alert("Please turn off 'Edit HTML' mode");
+                    return;
+                }
+                fname = this.src.split("/");
+                fname = fname[fname.length-1];
+                cmd = fname.replace(/(edit|\-|\.png)/g,"");
+
+                //alert(cmd)
+                idContent.document.execCommand(cmd,"",null);
+                idContent.focus();
+            }
+        });               
+    }
+});
+
+function setMode(bMode) {
+    var sTmp;
+    isHTMLMode = bMode;
+    if (isHTMLMode) {
+        $dh.innerTxt(idContent.document.body, idContent.document.body.innerHTML);
+        document.getElementById("editor-icons").style.display = "none";
+    } else {
+        idContent.document.body.innerHTML = $dh.innerTxt(idContent.document.body);
+        document.getElementById("editor-icons").style.display = "block";
+    }
+    idContent.focus();
+}
+
+</script>
+</head>
+<body>
+
+<div id="Container" style="width:500px;position:absolute;top:100px;left:30px;">
+    <div id="editor-toolbar" >
+    </div>
+    <iframe id="idContent" name="idContent" width="100%" height="280" frameborder="0"></iframe><br />
+    HTML edit <input type="checkbox" onclick="setMode(this.checked);">
+</div>
+
+</body>
+</html>

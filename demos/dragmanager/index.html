@@ -1,0 +1,39 @@
+<html>
+<head>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <style type="text/css">
+        .MOVE   {top:  120px; width:100px;height:100px;position:absolute;background:#cc5511;color:white;border:solid 1px yellow;}
+        .RESIZE {top: 230px; width:100px;height:100px;position:absolute;background:#0000aa;color:white;border: solid 1px #cccc00;overflow:hidden;}
+        #frame {position:absolute;top:120px;left:100px;width:400px;height:390px;border: solid 1px #dddddd;}
+    </style>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+    <script type="text/javascript" src="../common/dhtinydemo.js"></script>
+</head>
+<body>   
+<div id="frame"></div>
+<div id="Div1" class="MOVE" style="left:100px;z-index: 100;"> Move this (without mask)</div>
+<div id="Div2" class="MOVE" style="left:220px;z-index: 100;"> Move this (without ghost effect) </div>
+<div id="Div3" class="MOVE" style="left:340px;z-index: 100;"> Move this (with ghost effect) </div>
+
+<div id="Div4" class="RESIZE" style="left:100px;z-index: 100;">  Resize this (with mask)</div>
+<div id="Div5" class="RESIZE" style="left:220px;z-index: 100;">  Resize this (without mask)</div>
+<div id="Div6" class="RESIZE" style="left:400px;top:410px;z-index: 100;"> Resize this, and move this within a limited area </div>
+
+<script type="text/javascript">
+initDHTinyDemo("Drag & drop demo");
+
+$dh.Require(["util/dragmanager"]);
+
+$dh.addLoader(function() {        
+    $dh.disableSelect(document.body);
+    $dh.dragger.setDrag($dh.el("Div1"), { mode: "MOVE", noMask: true});
+    $dh.dragger.setDrag($dh.el("Div2"), { mode: "MOVE", ghostDrag: false });
+    $dh.dragger.setDrag($dh.el("Div3"), { mode: "MOVE", ghostDrag: true});
+    
+    $dh.dragger.setDrag($dh.el("Div4"), { mode: "RESIZE", ghostDrag: true, dResize:10});
+    $dh.dragger.setDrag($dh.el("Div5"), { mode: "RESIZE", ghostDrag: false, dResize:10});
+    $dh.dragger.setDrag($dh.el("Div6"), { mode: "RESIZE,MOVE", dResize:6, maxwidth:200, maxheight: 200, maxtop: 410, maxleft:400, mintop:120, minleft:100});
+});
+</script>    
+ </body>
+</html>

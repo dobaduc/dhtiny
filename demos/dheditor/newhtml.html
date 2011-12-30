@@ -1,0 +1,763 @@
+<html>
+
+<head>
+<style type="text/css">
+TABLE#tblCoolbar
+      {
+      background-color:threedface; padding:1px; color:menutext;
+      border-width:1px; border-style:solid;
+      border-color:threedhighlight threedshadow threedshadow threedhighlight;
+      }
+.cbtn
+      {
+      height:18;
+      BORDER-LEFT: threedface 1px solid;
+      BORDER-RIGHT: threedface 1px solid;
+      BORDER-TOP: threedface 1px solid;
+      BORDER-BOTTOM: threedface 1px solid;
+      }
+.txtbtn {font-family:arial; font-size:70%; color:menutext;}
+.sectionText
+      {font-family:arial; font-size:12px; color:menutext; font-weight:bold}
+
+      .sectionText2
+      {font-family:arial; font-size:12px; color:menutext;}
+</style>
+
+<script LANGUAGE="JavaScript">
+function button_over(eButton)
+      {
+      eButton.style.backgroundColor = "#B5BDD6";
+      eButton.style.borderColor = "darkblue darkblue darkblue darkblue";
+      }
+function button_out(eButton)
+      {
+      eButton.style.backgroundColor = "threedface";
+      eButton.style.borderColor = "threedface";
+      }
+function button_down(eButton)
+      {
+      eButton.style.backgroundColor = "#8494B5";
+      eButton.style.borderColor = "darkblue darkblue darkblue darkblue";
+      }
+function button_up(eButton)
+      {
+      eButton.style.backgroundColor = "#B5BDD6";
+      eButton.style.borderColor = "darkblue darkblue darkblue darkblue";
+      eButton = null;
+      }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var isHTMLMode=false
+
+document.onreadystatechange= function()
+      {
+        idContent.document.designMode="On"
+      }
+function cmdExec(cmd,opt)
+      {
+        if (isHTMLMode){alert("Please uncheck 'Edit HTML'");return;}
+        idContent.document.execCommand(cmd,"",opt);idContent.focus();
+      }
+function setMode(bMode)
+      {
+      var sTmp;
+        isHTMLMode = bMode;
+        if (isHTMLMode){sTmp=idContent.document.body.innerHTML;idContent.document.body.innerText=sTmp;}
+      else {sTmp=idContent.document.body.innerText;idContent.document.body.innerHTML=sTmp;}
+        idContent.focus();
+      }
+function createLink()
+      {
+      if (isHTMLMode){alert("Please uncheck 'Edit HTML'");return;}
+      cmdExec("CreateLink");
+      }
+function insertImage()
+      {
+      if (isHTMLMode)
+      {
+      alert("Please uncheck 'Edit HTML'");
+      return;
+      }
+
+      /*
+      var sImgSrc=prompt("Insert Image File (You can use your local image file) : ", "http://www.aspalliance.com/Yusuf/Article10/sample.jpg");
+      -- old attributes which only allowed you to enter the pathway --
+      */
+      document.formBody.textUpload.click();
+      var sImgSrc=document.formBody.textUpload.value;
+      if(sImgSrc!=null) cmdExec("InsertImage",sImgSrc);
+
+      }
+function Save()
+      {
+      if (isHTMLMode){alert("Please uncheck 'Edit HTML'");return;}
+        var sImgTag = idContent.document.body.all.tags("IMG");
+        var oImg;
+        for (var i = sImgTag.length - 1; i >= 0; i--)
+            {
+          oImg = sImgTag[i];
+          alert("Add your code to Upload local image file here. Image Inserted : " + oImg.src );
+              }
+        alert("Add your code to Save Document here");
+        //alert("Your Document : " + idContent.document.body.innerHTML);
+      document.formBody.popupTitle.value = idContent.document.body.innerHTML;
+      //var win = showModalDialog('test.html',window.formBody,'dialogWidth: 530px; dialogHeight: 500px; help: no; center: yes;');
+
+      }
+function Preview()
+      {
+      if (isHTMLMode){alert("Please uncheck 'Edit HTML'");return;}
+        var sImgTag = idContent.document.body.all.tags("IMG");
+        var oImg;
+        for (var i = sImgTag.length - 1; i >= 0; i--)
+            {
+          oImg = sImgTag[i];
+          alert("Add your code to Upload local image file here. Image Inserted : " + oImg.src );
+              }
+      document.formBody.popupTitle.value = idContent.document.body.innerHTML;
+      var win = showModelessDialog('result.html',window.formBody,'dialogWidth: 530px; dialogHeight: 550px; help: no; center: yes;');
+
+      }
+function foreColor()
+      {
+      var arr = showModalDialog("selcolor.html","","font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:34em" );
+      if (arr != null) cmdExec("ForeColor",arr);
+      }
+</script>
+</head>
+<body>
+
+<form name="formBody">
+<input type="hidden" name="popupTitle" value="">
+
+<table border="0" cellpadding="0" cellspacing="0" class="table3d" width="592">
+
+<tr>
+<td width="50">
+<span class="sectionText">7.7.1</span><br>
+</td>
+<td width="542">
+<span class="sectionText">Identity</span><br>
+</td>
+</tr>
+
+<tr>
+<td width="592" colspan="2" bgcolor="#000000">
+
+</td>
+</tr>
+
+<tr>
+<td width="592" colspan="2">
+&nbsp;
+</td>
+</tr>
+
+<tr>
+<td width="50">
+
+</td>
+<td width="542">
+<p>
+<span class="sectionText">Chemical Name</span><br>
+<textarea rows="4" cols="40" name="chemName"></textarea>
+</p>
+
+<p>
+<span class="sectionText">Formula</span><br>
+<input type="text" size="30" name="formula">
+</p>
+
+<p>
+<span class="sectionText">Generic Name</span><br>
+<input type="text" size="30" name="genName">
+</p>
+
+<p>
+<span class="sectionText">Trade Name</span><br>
+<input type="text" size="30" name="tradeName">
+</p>
+
+<p>
+<span class="sectionText">Dosage Form</span><br>
+<select name="dosage">
+<option value="Tablets">Tablets</option>
+<option value="Intravenous">Intravenous</option>
+</select>
+</p>
+
+<p>
+<span class="sectionText">Strength</span><br>
+<select name="strength" multiple size="3">
+<option value="10">10 mg</option>
+<option value="20">20 mg</option>
+<option value="40">40 mg</option>
+<option>10 mg</option>
+<option>20 mg</option>
+<option>40 mg</option>
+</select>
+</p>
+
+<p>
+<span class="sectionText">Manufacturer</span><br>
+<select name="manufacturer">
+<option value="Pfizer">Pfizer</option>
+<option value="Novartis">Novartis</option>
+</select>
+</p>
+
+<p>
+<span class="sectionText">Ingredients, active</span><br>
+<textarea rows="4" cols="40" name="ingActive"></textarea>
+</p>
+
+<p>
+<span class="sectionText">Ingredients, inactive</span><br>
+<textarea rows="4" cols="40" name="ingInactive"></textarea>
+</p>
+
+<p>
+<span class="sectionText">Description</span><br>
+<input type="text" size="30" name="desc">
+</p>
+
+</td>
+</tr>
+
+<tr>
+<td width="592" colspan="2">
+&nbsp;
+</td>
+</tr>
+
+<tr>
+<td width="50">
+<span class="sectionText">7.1</span><br>
+</td>
+<td width="542">
+<span class="sectionText">Study Design</span><br>
+</td>
+</tr>
+
+<tr>
+<td width="592" colspan="2" bgcolor="#000000">
+
+</td>
+</tr>
+
+<tr>
+<td width="592" colspan="2">
+&nbsp;
+</td>
+</tr>
+
+<tr>
+<td width="50">
+
+</td>
+<td width="542">
+<table id="tblCoolbar" width=542 cellpadding="0" cellspacing="0" border="0">
+
+<tr valign="middle">
+
+      <td colspan=16>
+
+            <select onchange="cmdExec('formatBlock',this[this.selectedIndex].value);this.selectedIndex=0">
+                  <option selected>Style</option>
+                  <option value="Normal">Normal</option>
+                  <option value="Heading 1">Heading 1</option>
+                  <option value="Heading 2">Heading 2</option>
+                  <option value="Heading 3">Heading 3</option>
+                  <option value="Heading 4">Heading 4</option>
+                  <option value="Heading 5">Heading 5</option>
+                  <option value="Address">Address</option>
+                  <option value="Formatted">Formatted</option>
+                  <option value="Definition Term">Definition Term</option>
+            </select>
+            <select onchange="cmdExec('fontname',this[this.selectedIndex].value);">
+                  <option selected>Font</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Arial Black">Arial Black</option>
+                  <option value="Arial Narrow">Arial Narrow</option>
+                  <option value="Comic Sans MS">Comic Sans MS</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="System">System</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Wingdings">Wingdings</option>
+            </select>
+            <select onchange="cmdExec('fontsize',this[this.selectedIndex].value);">
+                  <option selected>Size</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="10">10</option>
+                  <option value="12">12</option>
+                  <option value="14">14</option>
+            </select>
+      </td>
+            <td><div class="cbtn" onClick="Preview()" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <font class=txtbtn>&nbsp;&nbsp;Preview&nbsp;&nbsp;</font>
+      </div></td>
+</tr>
+<tr>
+
+      <td><div class="cbtn" onClick="cmdExec('cut')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Cut.gif" alt="Cut">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('copy')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Copy.gif" alt="Copy">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('paste')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Paste.gif" alt="Paste">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('bold')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Bold.gif" alt="Bold">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('italic')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Italic.gif" alt="Italic">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('underline')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Under.gif" alt="Underline">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('justifyleft')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Left.gif" alt="Justify Left">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('justifycenter')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Center.gif" alt="Center">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('justifyright')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="1" vspace=1 align=absmiddle src="images/Right.gif" alt="Justify Right">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('insertorderedlist')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="2" vspace=1 align=absmiddle src="images/numlist.GIF" alt="Ordered List">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('insertunorderedlist')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="2" vspace=1 align=absmiddle src="images/bullist.GIF" alt="Unordered List">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('outdent')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="2" vspace=1 align=absmiddle src="images/deindent.gif" alt="Decrease Indent">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('indent')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="2" vspace=1 align=absmiddle src="images/inindent.gif" alt="Increase Indent">
+      </div></td>
+
+      <td><div class="cbtn" onClick="foreColor()" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="2" vspace=1 align=absmiddle src="images/fgcolor.gif" alt="Forecolor">
+      </div></td>
+
+      <td><div class="cbtn" onClick="cmdExec('createLink')" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="2" vspace=1 align=absmiddle src="images/Link.gif" alt="Link">
+      </div></td>
+
+      <td><div class="cbtn" onClick="insertImage()" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img hspace="2" vspace=1 align=absmiddle src="images/Image.gif" alt="Image">
+      </div></td>
+
+      <td><div class="cbtn" onClick="Save()" onmouseover="button_over(this);" onmouseout="button_out(this);" onmousedown="button_down(this);" onmouseup="button_up(this);">
+      <img  hspace="2" vspace=1 align=left align=absmiddle src="images/Save.gif" alt="Save">
+      <font class=txtbtn>Save&nbsp;&nbsp;</font>
+      </div></td>
+
+      <td width=200></td>
+
+</tr>
+</table>
+
+
+<iframe width="542" id="idContent" height="350"></iframe>
+<br>
+<input type="checkbox" onclick="setMode(this.checked)"> Edit HTML
+</td>
+</tr>
+
+</table>
+<div style="visibility:hidden">
+<input type="file" name="textUpload">
+</div>
+</form>
+
+</body>
+</html>
+
+
+
+//////////////////////////////////////////////////
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+      <title>Untitled</title>
+<style type="text/css">
+
+.bold12Black
+{
+font-family:arial;
+font-size:12px;
+color:#000000;
+font-weight:bold
+}
+
+.bold14Black
+{
+font-family:arial;
+font-size:14px;
+color:#000000;
+font-weight:bold
+}
+
+.reg12Black
+{
+font-family:arial;
+font-size:12px;
+color:menutext;
+}
+
+</style>
+
+      <script language="javascript">
+      function displayData()
+      {
+            document.all.chemNameData.innerHTML=dialogArguments.chemName.value;
+            document.all.formulaData.innerHTML=dialogArguments.formula.value;
+            document.all.genNameData.innerHTML=dialogArguments.genName.value;
+            document.all.tradeNameData.innerHTML=dialogArguments.tradeName.value;
+
+      document.all.dosageData.innerHTML=dialogArguments.dosage.options[dialogArguments.dosage.selectedIndex].value;
+
+
+            for (i=0; i<dialogArguments.strength.length; ++i)
+            {
+                  if( dialogArguments.strength[i].selected)
+                  {
+                  //alert(dialogArguments.strength.options[i].value);
+                  document.all.strengthData.innerHTML=dialogArguments.strength.options[i].value;
+                  }
+            }
+
+
+      document.all.manufacturerData.innerHTML=dialogArguments.manufacturer.options[dialogArguments.manufacturer.selectedIndex].value;
+
+            document.all.ingActiveData.innerHTML=dialogArguments.ingActive.value;
+            document.all.ingInactiveData.innerHTML=dialogArguments.ingInactive.value;
+            document.all.descData.innerHTML=dialogArguments.desc.value;
+
+          document.all.sectionHead.innerHTML=dialogArguments.popupTitle.value;
+      }
+      </script>
+
+</head>
+
+<body onload="displayData();">
+
+<table width="500" border="0" cellpadding="2" cellspacing="0">
+
+<tr>
+<td width="500" colspan="2">
+<span class="bold14Black">Formatted Preview</span><br>
+</td>
+</tr>
+
+<tr>
+<td width="500" colspan="2">
+&nbsp;
+</td>
+</tr>
+
+<tr>
+<td width="50">
+<span class="bold12Black">7.7.1</span><br>
+</td>
+<td width="450">
+<span class="bold12Black">Identity</span><br>
+</td>
+</tr>
+
+<tr>
+<td width="500" colspan="2" bgcolor="#000000">
+
+</td>
+</tr>
+
+<tr>
+<td width="50">
+&nbsp;
+</td>
+<td width="450">
+      <!-- START embedded table -->
+      <table width="450" border="0" cellpadding="0" cellspacing="0">
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Chemical Name</span><br>
+      </td>
+      <td width="330">
+      <div id="chemNameData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Formula</span><br>
+      </td>
+      <td width="330">
+      <div id="formulaData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Generic Name</span><br>
+      </td>
+      <td width="330">
+      <div id="genNameData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Trade Name</span><br>
+      </td>
+      <td width="330">
+      <div id="tradeNameData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Dosage Form</span><br>
+      </td>
+      <td width="330">
+      <div id="dosageData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Strength</span><br>
+      </td>
+      <td width="330">
+      <div id="strengthData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Manufacturer</span><br>
+      </td>
+      <td width="330">
+      <div id="manufacturerData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Ingredients, active</span><br>
+      </td>
+      <td width="330">
+      <div id="ingActiveData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Ingredients, inactive</span><br>
+      </td>
+      <td width="330">
+      <div id="ingInactiveData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Description</span><br>
+      </td>
+      <td width="330">
+      <div id="descData" class="reg12Black"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+
+      </table>
+      <!-- END embedded table -->
+</td>
+</tr>
+
+<!-- START spacer row -->
+<tr>
+<td width="500" colspan="2">
+&nbsp;
+</td>
+</tr>
+<!-- END spacer row -->
+
+<tr>
+<td width="50">
+<span class="bold12Black">7.1</span><br>
+</td>
+<td width="450">
+<span class="bold12Black">Study Design</span><br>
+</td>
+</tr>
+
+<tr>
+<td width="500" colspan="2" bgcolor="#000000">
+
+</td>
+</tr>
+
+<tr>
+<td width="50">
+&nbsp;
+</td>
+<td width="450">
+      <!-- START embedded table -->
+      <table width="450" border="0" cellpadding="0" cellspacing="0">
+
+      <!-- START spacer row -->
+      <tr>
+      <td width="450" colspan="2">
+      &nbsp;
+      </td>
+      </tr>
+      <!-- END spacer row -->
+
+      <!-- START data row -->
+      <tr>
+      <td width="120" valign="top">
+      <span class="bold12Black">Paragraph</span><br>
+      </td>
+      <td width="330">
+      <div id="sectionHead"></div>
+      </td>
+      </tr>
+      <!-- END data row -->
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>

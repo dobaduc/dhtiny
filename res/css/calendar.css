@@ -1,0 +1,35 @@
+/* 
+    Document   : calendar
+    Created on : May 26, 2011, 12:09:27 AM
+    Author     : Do Ba Duc
+    Description:
+        Default style sheet for calendar control
+*/
+
+.DHCalendar .CalendarTable .NavigationBar .ButNext { font-size:14px; cursor: pointer;}
+.DHCalendar .CalendarTable .NavigationBar .ButNext:hover { text-decoration:underline;}
+.DHCalendar .CalendarTable .NavigationBar .ButPrev { font-size:14px; cursor: pointer;}
+.DHCalendar .CalendarTable .NavigationBar .ButPrev:hover { text-decoration:underline;}
+.DHCalendar .CalendarTable .NavigationBar .MonthLabel { color: #111188;}
+
+.DHCalendar .CalendarTable .DayBar { background:#D2DB87; text-align:center; color: #111188; cursor: default;font-family: sans-serif;font-size:11px;}
+.DHCalendar .CalendarTable .DayBar td div {padding-top: 4px;}
+.DHCalendar .CalendarTable .DayBar td { border: solid 1px #A7AD6B; }
+
+.DHCalendar .CalendarTable .WeekDay { color: #37442A;background: lightyellow;}
+.DHCalendar .CalendarTable .Weekend { color: #AF2900;background:#f9fff9;}
+.DHCalendar .CalendarTable .LastMonth { color: Gray;}
+.DHCalendar .CalendarTable .NextMonth  { color: Gray;}
+
+.DHCalendar .CalendarTable .Today { color:red; font-weight:bold; background:#feffaa;}
+.DHCalendar .CalendarTable .Today:hover { color:red; font-weight:bold; background:#feffaa;}
+
+.DHCalendar .CalendarTable .Selected  { color: white;background:#436ddc;}
+.DHCalendar .CalendarTable .Selected:hover  { color: white;background:#436ddc;}
+
+.DHCalendar .CalendarTable tbody td {border: solid 1px #A7AD6B;font-family: sans-serif;font-size:10px;}
+.DHCalendar .CalendarTable tbody td div {text-align:center;cursor:pointer;}
+.DHCalendar .CalendarTable tbody td div:hover {text-decoration:underline;}
+
+.DHCalendar .CalendarTable .NavigationBar td { border: solid 1px #A7AD6B;}
+.DHCalendar .CalendarTable .NavigationBar td div { cursor: default;}

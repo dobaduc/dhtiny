@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title>Dialog demo</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <style type="text/css">
+    body {margin:0px; padding: 0px; overflow:hidden;}
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+$dh.Require("ctrl/dialog");
+$dh.addLoader(function() {
+    var bs = $dh.bodySize();
+        var dw = 400, dh = 320;
+
+        var dialog = new DHDialog(document.body, {
+            id : "MyDialog",
+            titleTxt: "Title",
+            bottomTxt: "Status text",
+            top: Math.floor(bs.height / 2), left: Math.floor(bs.width / 2), width: 20, height: 14,
+            color: "yellow",
+            titlebarHeight: 35,
+            zIndex: 999999,
+            imgPath: $dh.root + "res/images/dialog/theme2/"
+        });
+
+        dialog.bodypart.setProp("background", "rgb(51,51,51)");
+        dialog.title.style.cssText += ";text-align:center;font-weight:bold;border-bottom:solid 1px #aaaaaa"; // For FF        
+        dialog.title.style.cursor = "default";
+        dialog.title2.canvas.style.borderBottom = "solid 1px #aaaaaa"; // For IE
+
+        var iframe = document.createElement("iframe");
+        iframe.style.cssText += "border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;";
+        iframe.frameBorder = "0";
+        iframe.src = "http://google.com";
+
+        dialog.addEv("onanimstart", function() {
+            dialog.body.canvas.style.display = "none";
+        });
+        dialog.addEv("onanimstop", function() {
+            dialog.body.canvas.style.display = "";
+            dialog.body.canvas.appendChild(iframe);
+        });
+
+        var bs = $dh.bodySize();
+        dialog.show();
+        dialog.draw({ top: Math.floor(bs.height / 2), left: Math.floor(bs.width / 2), width: 5, height: 5 });        
+        dialog.draw({ top: Math.floor(bs.height / 2 - dh/2), left: Math.floor(bs.width / 2 - 300), width: dw, height: dh }, 1);
+        
+        $dh.disableSelect(dialog.canvas);
+});
+</script>    
+ </body>
+</html>

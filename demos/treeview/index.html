@@ -1,0 +1,98 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <style type="text/css">
+    body {margin:0px; padding: 0px; overflow:hidden;}
+
+    .DHTreeView {padding: 0px;margin:0px;font-family:Times New Roman;font-size:14px;background: #f5fcfc;}
+    .DHTreeView li div:hover{text-decoration:underline;}
+    .DHTreeView div{ cursor:pointer;}
+    .DHTreeView .selectedNode { color:#af0000;background:#ECE9D8; font-weight:bold;}
+    .DHTreeView .expandedNode { color: #af0000;font-weight:normal;}
+    .DHTreeView .normalNode { color: #af0000;font-weight:normal;}
+
+    </style>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+</head>
+<body>
+<div class="DemoHeader">
+    <span class="DHTinyTitle">{&nbsp;dhtiny&nbsp;}&nbsp;</span>
+    <span class="DemoTitle"> >&nbsp;&nbsp;TreeView demo (2008) </span>
+    <div class="CopyrightPart">Copyright&nbsp;&copy;&nbsp;KeyboardDigger</div>
+</div>
+<script type="text/javascript">
+$dh.Require(["ctrl/treeview"]);
+$dh.addLoader(function() {
+    // TreeView Demo
+    var data = [ // Layer 0
+          {innerHTML: "Item1 - Simple tree view",iconType:"file"},
+          {innerHTML: "Item2",iconType:"file"},
+          [   //Layer 1
+              {innerHTML: "Item3",iconType:"folder"}, 
+              [ // Layer2
+                {innerHTML: "Item31",iconType:"file"},
+                [
+                    {innerHTML: "Item32",iconType:"folder"},
+                    ["A1","A2","A3"]
+                ],
+                {innerHTML: "Item33",iconType:"file"}
+              ]
+          ],
+          [  
+             {innerHTML: "Item4",iconType:"folder", status: "expanded"},
+             [ // Layer1
+                 {innerHTML: "Item41",iconType:"file"}, 
+                 [ 
+                   {innerHTML: "Item42",iconType:"folder"}, 
+                   [  // Layer 2
+                     {innerHTML: "Item421",iconType:"file"},
+                     "Item422",
+                     [  
+                       {innerHTML: "Item423",iconType:"folder"},
+                       [ // Layer 3 
+                         "Item4231",
+                         {innerHTML: "Item423",iconType:"file"}
+                       ]
+                     ]
+                   ],
+                 ],
+                 "Item43"
+             ]
+          ],
+          [   //Layer 1
+              {innerHTML: "Item5",iconType:"folder"}, 
+              [ // Layer2
+                {innerHTML: "Item51",iconType:"file"},
+                [
+                    {innerHTML: "Item52",iconType:"folder"},
+                    ["X1","X2","X3","X4"]
+                ],
+                {innerHTML: "Item53",iconType:"file"}
+              ]
+          ]
+    ];
+    
+    var tree = new DHTreeView(document.body, { 
+        cssText:"position:absolute;left:100px;top:120px;width:200px;height:300px;border:solid 1px green;overflow:auto;",
+        nodeHeight: 22,
+        listType: 1,
+        className: "DHTreeView",
+        treeData: data            
+    });
+    
+    data[0].innerHTML = "Item1 - Rich tree view";
+    var tree2 = new DHTreeView(document.body, { 
+        cssText:"position:absolute;left:320px;top:120px;width:200px;height:300px;border:solid 1px green;overflow:auto;",
+        nodeHeight: 22, imagePath: $dh.root + "res/images/DHTreeView/",
+        listType: 2, captionpadding: 4, iconwidth: 20,
+        className: "DHTreeView",
+        treeData: data            
+    });
+    
+    $dh.disableSelect(tree.canvas);
+    $dh.disableSelect(tree2.canvas);
+});
+
+</script>    
+ </body>
+</html>

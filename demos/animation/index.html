@@ -1,0 +1,100 @@
+<html>
+<head>
+    <title>DHTiny - AnimationItem demo</title>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+</head>
+<body>
+<div class="DemoHeader">
+    <span class="DHTinyTitle">{&nbsp;dhtiny&nbsp;}&nbsp;</span>
+    <span class="DemoTitle"> >&nbsp;&nbsp;Simple animation demo</span>
+    <div class="CopyrightPart">Copyright&nbsp;&copy;&nbsp;KeyboardDigger</div>
+</div>
+<br><br><br><br><br>
+<button onclick="DO('stop','1')">Stop</button>
+<button onclick="DO('start','1')">Resume</button>
+Current animation effect <span id="currentEffect" style="font-weight:bold;"></span><br />
+<script type="text/javascript">
+$dh.Require(["ctrl/animitem","ctrl/console"]);
+
+var test1, test2, effects = [], ceffect, inter = 1;
+$dh.addLoader(function() {
+    $dh.console.show(true);
+    $dh.console.bounds(10,460,300,400);
+
+    prepareOptions();
+    drawTest1();
+    drawTest2();
+});
+
+function DO(act, idx) {
+    window["test"+idx][act]();
+}
+function drawTest1() {
+    test1 = new DHAnimItem(document.body, {
+        left: 150, top: 150, style:"position: absolute;z-index:100;border: solid 1px #ee0000;background:yellow;",
+        width: 70, height: 70,
+        duration: 1, exeFunc: DHMotion.AnimEffects.backEaseIn
+    });
+    test1.show();
+    test1.onAnimStop = function() {
+        // Change to random effect
+        idx = Math.floor(Math.random() * (effects.length -1));
+        setCurrentEffect(idx);
+
+        inter = 1;// Interval 
+        if (this.left == 150 && this.top == 150)
+            this.draw({ left: 350, top: 150 }, inter, ceffect);
+        if (this.left == 350 && this.top == 150)
+            this.draw({ left: 350, top: 350 }, inter, ceffect);
+        if (this.left == 350 && this.top == 350)
+            this.draw({ left: 150, top: 350 }, inter, ceffect);
+        if (this.left == 150 && this.top == 350)
+            this.draw({ left: 150, top: 150 }, inter, ceffect);
+    };
+    test1.onAnimation = function() {
+        $dh.console.writeln("Test 1: time="+ this._currentTime + "/"+this.getDuration()+", position="+  this.getProgress())
+    }
+
+    //Start from effects[0]
+    setCurrentEffect(0);
+    test1.draw({ left: 350, top: 150 }, inter, ceffect);
+    
+}
+
+
+var minh = 25, maxh =100, minf = 12, maxf = 30, mint = 140, minw=100, maxw =300;
+function drawTest2() {
+    test2 = new DHAnimItem(document.body, {
+        left: Math.floor($dh.bodySize().width/2 - minw/2), top: mint,
+        cssText: "position: absolute; textAlign: center; overflow:visible;color:red;font-weight:bold",
+        width: minw, height: minh, fontSize: minf,
+        innerHTML: "Happy coding!"
+    });
+
+    loop = function() {
+        var bb = $dh.bodySize();
+        if (test2.top <= mint+1)
+            des = { top : bb.height- 100 - maxh, left: Math.floor(bb.width/2 - maxw/2), height: maxh, fontSize: maxf, width: maxw};
+        else
+            des = { top : mint, left: Math.floor(bb.width/2 - minw/2), height: minh, fontSize: minf, width: minw};
+        this.draw(des, inter*2, DHMotion.AnimEffects.backEaseOut);
+    }
+    test2.onAnimStop = loop;
+    test2.onAnimStop();
+}
+
+function prepareOptions() {
+    for (var p in DHMotion.AnimEffects) {
+        effects.push([p, DHMotion.AnimEffects[p]]);
+    }
+}
+
+function setCurrentEffect(idx) {
+     //document.title = effects[idx][0];
+     $dh.el("currentEffect").innerHTML = effects[idx][0];
+     ceffect = effects[idx][1];
+}
+</script>    
+</body>
+</html>

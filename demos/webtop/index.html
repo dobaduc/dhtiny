@@ -1,0 +1,101 @@
+<html >
+<head>
+    <title>DHTiny - Webtop application demo</title>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <script type="text/javascript" src="../../util/event.js"></script>
+    <script type="text/javascript" src="../../util/animation.js"></script>        
+    <script type="text/javascript" src="../../util/dragmanager.js"></script>
+    <script type="text/javascript" src="../../util/imgList.js"></script>    
+    <script type="text/javascript" src="../../ctrl/richCanvas.js"></script>
+    <script type="text/javascript" src="../../ctrl/animItem.js"></script>     
+    <script type="text/javascript" src="../../util/animation.js"></script>
+    <script type="text/javascript" src="../../ctrl/dialog.js"></script>
+    <script type="text/javascript" src="../../ctrl/treeview.js"></script>    
+    <script type="text/javascript" src="icon.js"></script>
+    <script type="text/javascript" src="taskbar.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" href="../common/dhtinydemo.css" />
+</head>
+<body style="background-color:#030538;">
+<div class="DemoHeader">
+    <span class="DHTinyTitle">{&nbsp;dhtiny&nbsp;}&nbsp;</span>
+    <span class="DemoTitle"> >&nbsp;&nbsp;Webtop demo (2008) </span>
+    <div class="CopyrightPart">Copyright&nbsp;&copy;&nbsp;KeyboardDigger</div>
+</div>
+<div style="background: url(images/backgroundCorner.gif) no-repeat right bottom;width:100%;height:100%;top:120px;position:aboslute;"></div>
+<script type="text/javascript">
+$dh.addLoader(function() {
+    var taskbar = $dh.New("div",{opac:100});    
+    $dh.construct(taskbar, Taskbar,[27]);
+    $dh.addCh(document.body, taskbar);/**/
+    $dh.construct(document.body,GridManager,[]);
+    
+    $dh.disableSelect(document.body);
+    
+    //$dh.construct(document.body,DHFormManager,[]);
+    
+    document.body.moveGridTo(30,120);
+    for (var k = 0 ; k < 16 ; k ++ ) {
+        var icon = $dh.New(GridIcon, [document.body, (k%2==0)? "Ghost drag": "Normal drag",k%5])
+        icon.ondblclick = function() {
+            if (!$dh.isNil(this.targetForm)) {
+                this.targetForm.show();
+                return;
+            }
+            var bs = $dh.bodySize();
+            // Dialog size: dw = width, dh = height
+            var dw = 400, dh = 320;
+            var form = new DHDialog(document.body, {
+                id : "MyDialog",
+                titleTxt: "Dialog title: Hogehoge",
+                bottomTxt: "Status: hogehoge",
+                top: Math.floor(bs.height / 2), left: Math.floor(bs.width / 2), 
+                width: 20, 
+                height: 14,
+                color: "yellow",
+                titlebarHeight: 35,
+                zIndex: 999999,
+                imgPath: $dh.root + "res/images/dialog/theme3/"
+            });
+            
+            $dh.addEv(form.canvas, "mousedown", function(ev) {
+                if (window.currentDHForm)
+                    window.currentDHForm.canvas.style.zIndex = 0;
+                window.currentDHForm = form;
+                form.canvas.style.zIndex = 999;
+            });
+            
+            form.bodypart.setProp("background", "#0089ab");
+            form.title.style.cssText += ";text-align:center;font-weight:bold;border-bottom:solid 1px #aaaaaa"; // For FF
+            form.title2.canvas.style.borderBottom = "solid 1px #aaaaaa"; // For IE
+            form.title.style.cursor = "default";
+
+            var iframe = document.createElement("iframe");
+            iframe.style.cssText += "border:none;width:100%;height:100%;position:absolute;top:0px;left:0px;"; //";border:none;left:" + form.cornerWidth + "px;height:" + (dh - form.titlebarHeight - form.bottombarHeight - 20) + "px;position:absolute;top:15px;width:" + (dw - 2 * form.cornerWidth) + "px;";
+            iframe.frameBorder = "0";
+            iframe.src = "http://google.com";
+
+            form.addEv("onanimstart", function() {
+                form.body.canvas.style.display = "none";
+            });
+            form.addEv("onanimstop", function() {
+                form.body.canvas.style.display = "";
+                form.body.canvas.appendChild(iframe);
+            });
+
+            var bs = $dh.bodySize();
+            form.show();
+            form.draw({ top: Math.floor(bs.height / 2), left: Math.floor(bs.width / 2), width: 5, height: 5 });
+            form.draw({ top: Math.floor(bs.height / 2) - 195, left: 550, width: dw, height: dh }, 1);     
+            /*/ TreeView Demo
+            var tree = $dh.New(DHTreeView,[18]);
+            $dh.addCh(form.body, tree);            
+            tree.expandNode(null,data1);*/
+        }
+    }     
+    window.data1 = [["Folder-A",0],["File-B",1],["File-C",1],["File 1",1],["Folder-AB",0]];
+});
+
+</script>
+</body>
+</html>
