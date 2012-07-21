@@ -24,13 +24,11 @@ $dhtiny = $dh = {
     // Library information
     version: "1.1.5",
     // Library container (scope) - Useful to use DHTiny inside child IFRAME
-    container: {},
+    scope: {},
     // Shortcut methods
     shortcuts: {},
     // Initialize DHTiny with a scope
-    init: function(scope) {
-        $dh.container = scope || {};
-    },
+    init: function(scope) { $dh.scope = scope || {}; },
     // Extend an object's property set
     set: function(obj, props, deepFlag) {
         if ($dh.isNil(props)) return obj;
@@ -79,10 +77,11 @@ $dhtiny = $dh = {
     //  3. _extended: Array of interface reference that this class is implementing
     newClass: function(_className, _super) { // All arguments after 2nd one will be treated as normal class/objects
         // 1. Create class        
-        var C = $dh[_className] = function() {
-            if (this.init) this.init.apply(this, arguments);
-            $dh.instOf[_className].push(this);
-        };
+        var args = arguments, k,
+            C = $dh[_className] = function() {
+                if (this.init) this.init.apply(this, arguments);
+                $dh.instOf[_className].push(this);
+            };
 
         // 2. Inheriting super class/ user-defined methods and properties
         if ($dh.isStr(_super))  _super = $dh[_super];
@@ -90,9 +89,8 @@ $dhtiny = $dh = {
         if ($dh.isFunc(_super)) C.prototype._super = _super;
 
         // 3. Implementing o in given order
-        var args = arguments;
         C.prototype._extended = [];
-        for (var k = args.length - 2; k >= 2; k--) {
+        for (k = args.length - 2; k >= 2; k--) {
             if ($dh.isStr(args[k])) {
                 args[k] = $dh[args[k]];
             }            
@@ -112,37 +110,26 @@ $dhtiny = $dh = {
     },
 
     // Create/set namespace with given structure
-    namesp: function(namespace, target) {
-        if (namespace.indexOf(".") < 0) {
-            return;
-        }
-        np = namespace.split(".");
-        var parent = $dh;
+    namesp: function(nsp, target) {
+        if (nsp.indexOf(".") < 0) return;
+        var pr = $dh, np = namespace.split(".");
         for (i= 0; i < np.length -1 ; i++) {
-            if (!parent[np[i]]) {
-                parent[np[i]] = {};
-            }
-            parent = parent[np[i]];
+            if (!pr[np[i]]) pr[np[i]] = {};
+            pr = pr[np[i]];
         }
-        parent[np[np.length -1]] = target ? target: (parent[np[np.length -1]] || {});
+        pr[np[np.length -1]] = target ? target: (pr[np[np.length -1]] || {});
         
-        return parent[np[np.length -1]];
+        return pr[np[np.length -1]];
     },
     
     // Extend a class/object
     extend: function(_obj, _props) {
         if ($dh.isFunc(_obj)) { // Extending a class
-            $dh.isFunc(_props) ? $dh.set(_obj.prototype, _props.prototype, true) : $dh.set(_obj.prototype, _props, true);
+            return $dh.isFunc(_props) ? $dh.set(_obj.prototype, _props.prototype, true) : $dh.set(_obj.prototype, _props, true);
         }
         else {
-            if ($dh.isFunc(_props)) {
-                $dh.set(_obj, _props.prototype, true);
-            }
-            else {
-                $dh.set(_obj, _props, true);
-            }
+            return $dh.isFunc(_props) ? $dh.set(_obj, _props.prototype, true): $dh.set(_obj, _props, true);
         }
-        return _obj;
     },
 
     // Treat an object as an instance of a given class
@@ -164,12 +151,13 @@ $dhtiny = $dh = {
     },
     
     delegate: function(_scope, _method) { // Create delegate // dh.method
-        _scope = _scope || $dh.container;
+        _scope = _scope || $dh.scope;
         return function() {_scope[_method].apply(_scope, arguments);}
     },
-    setTime: function(owner, funcName, args, length, type) { // Type = loop : setInterval, else: setTimeout
-        var func = (owner || $dh.container)[funcName];
-        var newFunc = function() {func.apply(owner, args);}
+    
+    setTime: function(scope, funcName, args, length, type) { // Type = loop : setInterval, else: setTimeout
+        var func = (scope || $dh.scope)[funcName],
+            newFunc = function() {func.apply(scope, args);}
         if (type == "loop") {
             return setInterval(newFunc, length);
         }

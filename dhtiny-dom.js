@@ -1,12 +1,16 @@
 // Set window as global container
 (function(){
 $dhtiny.init(window);
+var WIN = window,
+    NAV = navigator,
+    DOC = WIN.document;
+    
 DOM = {
     // Override New method
     New: function(_what, _props, _deep) {
         if ($dh.isStr(_what)) {
             if (!$dh.isFunc( $dh[_what] )) {
-                return $dh.set(document.createElement(_what), _props);
+                return $dh.set(DOC.createElement(_what), _props);
             } else {
                 _what = $dh[_what];
             }
@@ -18,8 +22,8 @@ DOM = {
     loaders: [],
     addLoader: function(func) {$dh.loaders.push(func);},
     root: (function() { //--- Detect DHTiny path----
-        var scripts = document.getElementsByTagName("script");
-        for (var x = 0; x < scripts.length; x++)
+        var scripts = DOC.getElementsByTagName("script"), x;
+        for (x = 0; x < scripts.length; x++)
             if (scripts[x].src.toUpperCase().indexOf("DHTINY.JS") >= 0)
             return scripts[x].src.substr(0, scripts[x].src.toUpperCase().indexOf("DHTINY.JS"));
     })(),
@@ -33,10 +37,10 @@ DOM = {
             this.name = this.getName(this.bsNameVer) || "Unknown";
             // Enable checker like this: $dh.browser.ie 
             this[this.name] = true;
-            this.version = this.getVer(navigator.userAgent) || this.getVer(navigator.appVersion) || "Unknown";
+            this.version = this.getVer(NAV.userAgent) || this.getVer(NAV.appVersion) || "Unknown";
         },
         mode: (function(){
-            var mode= document.compatMode;
+            var mode= DOC.compatMode;
             switch(mode){
                 case 'BackCompat': return 'quirks'; break;
                 case 'CSS1Compat': return 'Standards Compliance'; break;
@@ -60,12 +64,12 @@ DOM = {
             return parseFloat(verStr.substring(index + this.verDetectStr.length + 1));
         },
         bsNameVer: [
-	        {prop: window.opera, bsName: "opera"},
-		    {str: navigator.userAgent, vdName: "Chrome", bsName: "chrome"},
-		    {str: navigator.vendor, vdName: "Apple", bsName: "safari", verStr: "version"},
-		    {str: navigator.vendor, vdName: "KDE", bsName: "konqueror"},
-		    {str: navigator.userAgent, vdName: "Firefox", bsName: "firefox"},
-		    {str: navigator.userAgent, vdName: "MSIE", bsName: "ie", verStr: "MSIE"}
+	        {prop: WIN.opera, bsName: "opera"},
+		    {str: NAV.userAgent, vdName: "Chrome", bsName: "chrome"},
+		    {str: NAV.vendor, vdName: "Apple", bsName: "safari", verStr: "version"},
+		    {str: NAV.vendor, vdName: "KDE", bsName: "konqueror"},
+		    {str: NAV.userAgent, vdName: "Firefox", bsName: "firefox"},
+		    {str: NAV.userAgent, vdName: "MSIE", bsName: "ie", verStr: "MSIE"}
 	    ]
     },
     
@@ -80,10 +84,10 @@ DOM = {
             return {isFree: true, xmlhttp: this.newXmlHttpObj()};
         },
         newXmlHttpObj: function() {
-            if ($dh.container.XMLHttpRequest) {
+            if (XMLHttpRequest) {
                 return new XMLHttpRequest();
             }
-            else if ($dh.container.ActiveXObject) {
+            else if (ActiveXObject) {
                 return new ActiveXObject("Microsoft.XMLHTTP");
             }
             else {
@@ -91,18 +95,18 @@ DOM = {
             }
         },
         getFreeXHR: function() {
-            for (var i = 0; i < this.XHRs.length; i++) {
+            var i, XHR;
+            for (i = 0; i < this.XHRs.length; i++) {
                 if (this.XHRs[i].isFree == true) return i;
             }
-            var XHR = $dh.ajax.newXHR();
+            XHR = $dh.ajax.newXHR();
             XHR.requestIndex = this.XHRs.length;
             this.XHRs.push(XHR);
             return this.XHRs.length - 1;
         },
         // TODO: Wrap all properties to a single object
         sendRequest: function(url, methodtype, postdata, callBack) {
-            var pos = this.getFreeXHR();
-            var xhr = this.XHRs[pos];
+            var pos = this.getFreeXHR(), xhr = this.XHRs[pos];
             xhr.callBack = callBack;
 
             if (xhr.xmlhttp) { // Do what old xmlhttp object does
@@ -174,12 +178,13 @@ DOM = {
         }
     },
     Require: function(file, type) { // Import js, css
+        var i, files;
         if ($dh.isStr(file)) {
             type = type || "js";
             file = file.toLowerCase();
             if (file.indexOf(",") > 0) { // Multiple file
-                var files = file.split(",");
-                for (var i= files.length-1; i>0; i--){
+                files = file.split(","), i;
+                for (i= files.length-1; i>0; i--){
                     files[i] = files[0].replace(/\/([^,]*)$/,"/"+ files[i]);
                 }
                 $dh.Require(files, type);
@@ -194,20 +199,19 @@ DOM = {
             }
         }
         else if ($dh.isArr(file)){
-            for (var i=0; i < file.length; i++) {
+            for (i=0; i < file.length; i++) {
                 $dh.Require(file[i], type);
             }
         }
     },
     Eval: function(data, type, isFilePath) { // Evaluate an expression which is a javascript/css string or a JS/CSS filename
-        var head = document.getElementsByTagName("head")[0] || document.documentElement;
-        var tag;
+        var head = DOC.getElementsByTagName("head")[0] || DOC.documentElement, tag;
         if (type != "css") {
-            var tag = document.createElement("script");     
+            tag = DOC.createElement("script");     
             tag.type = "text/javascript";
         }
         else {
-            var tag = document.createElement("style");
+            tag = DOC.createElement("style");
             tag.type = "text/css";
         }
         if (isFilePath) { // Data is a file path            
@@ -218,54 +222,52 @@ DOM = {
             tag.text = data;
         }
         else {
-            tag.appendChild( document.createTextNode( data ) );
+            tag.appendChild( DOC.createTextNode( data ) );
         };
         
         head.appendChild( tag );
-        if (type == "js") {
-            head.removeChild( tag );
-        }
+        if (type == "js") head.removeChild( tag );
     },
 
     //=======================================================================
     //===== DOM METHODS ==============================================
     //=======================================================================
     msPos: function(ev) { // GET mouse/event position
-        ev = ev || $dh.container.event;
+        ev = ev || WIN.event;
         if (ev.pageX || ev.pageY) {
             return {left: ev.pageX, top: ev.pageY};
         }
         else {
             var sx = 0, sy = 0;
-            if (document.documentElement.scrollTop) {
-                sx = document.documentElement.scrollLleft;
-                sy = document.documentElement.scrollTop;
+            if (DOC.documentElement.scrollTop) {
+                sx = DOC.documentElement.scrollLleft;
+                sy = DOC.documentElement.scrollTop;
             }
             return {
-                left: ev.clientX + document.body.scrollLeft + sx - document.body.clientLeft,
-                top: ev.clientY + document.body.scrollTop + sy - document.body.clientTop
+                left: ev.clientX + DOC.body.scrollLeft + sx - DOC.body.clientLeft,
+                top: ev.clientY + DOC.body.scrollTop + sy - DOC.body.clientTop
             };
         }
     },
     msOffset: function(ev, _obj) { // GET mouse's offset position within an object
-        ev = ev || $dh.container.event;
+        ev = ev || WIN.event;
         var objPos = $dh.pos(_obj), msPos = $dh.msPos(ev);
         return {left: msPos.left - objPos.left, top: msPos.top - objPos.top};
     },
     bodySize: function(fullsizeFlag) {   // GET document body's size
-        if (fullsizeFlag) {
-            var de = document.documentElement;
-            var st = de.scrollTop, sl = de.scrollLeft;
+        var de = DOC.documentElement, bd = DOC.body, st;
+        if (fullsizeFlag) {            
+            st = de.scrollTop, sl = de.scrollLeft;
             de.scrollTop = de.scrollLeft = 99999999;
             d = {w: de.scrollLeft, h: de.scrollTop};
             de.scrollTop = st;
             de.scrollLeft = sl;
         }
         else { d = {w: 0, h: 0}; };
-        return !$dh.isNil($dh.container.innerWidth) ? {width: d.w + $dh.container.innerWidth, height: d.h + $dh.container.innerHeight} : 
-                    (!$dh.isNil(document.documentElement) && !$dh.isNil(document.documentElement.clientWidth) && document.documentElement.clientWidth != 0 ?
-                    {width: d.w + document.documentElement.clientWidth, height: d.h + document.documentElement.clientHeight} :
-                    {width: d.w + document.body.clientWidth, height: d.h + document.body.clientHeight}
+        return !$dh.isNil(WIN.innerWidth) ? {width: d.w + WIN.innerWidth, height: d.h + WIN.innerHeight} : 
+                    (!$dh.isNil(de) && !$dh.isNil(de.clientWidth) && de.clientWidth != 0 ?
+                    {width: d.w + de.clientWidth, height: d.h + de.clientHeight} :
+                    {width: d.w + bd.clientWidth, height: d.h + bd.clientHeight}
             )
     },
     //============ 2-way callable functions ====================================
@@ -281,7 +283,7 @@ DOM = {
         if (obj.currentStyle) return obj.currentStyle[prop]; // IE
         // FF, Opera...
         prop = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
-        return $dh.container.getComputedStyle(obj, null).getPropertyValue(prop);
+        return WIN.getComputedStyle(obj, null).getPropertyValue(prop);
     },
     
     hasClass: function(_ele, _cls) {
@@ -308,11 +310,10 @@ DOM = {
         }
     },
     el: function(prop, option) { // Select elements that match givent options
-        if (prop && prop.tagName)
-            return prop; // Already got an element object
+        if (prop && prop.tagName) return prop; // Already got an element object
         if (!option) {
             if ($dh.isStr(prop)) {
-                return document.getElementById(prop);
+                return DOC.getElementById(prop);
             }
             else {
                 return null;
@@ -320,10 +321,10 @@ DOM = {
         }
         else {
             if (option.toLowerCase() === "tag") {
-                return document.getElementsByTagName(prop);
+                return DOC.getElementsByTagName(prop);
             }
             else if (option.toLowerCase() == "name") {
-                return document.getElementsByName(prop);
+                return DOC.getElementsByName(prop);
             }
         }
     },
@@ -338,14 +339,14 @@ DOM = {
             return _obj;
         }
         // GET _id's opacity
-        var styleObj = _obj.style;
+        var styleObj = _obj.style, str, str2;
         if (styleObj.opacity) return styleObj.opacity * 100;
         if (styleObj.MozOpacity) return styleObj.MozOpacity * 100;
         if (styleObj.KhtmlOpacity) return styleObj.KhtmlOpacity * 100;
         // IE - Special things lead to stupid things
         if (!$dh.isNil(styleObj.filter) && styleObj.filter != "") {
-            var str = styleObj.filter;
-            var str2 = str.substr(14);
+            str = styleObj.filter;
+            str2 = str.substr(14);
             return parseInt(str2.substr(0, str2.length - 1));
         }
         else return 100; // Nothing to get
@@ -355,13 +356,13 @@ DOM = {
         switch (arguments.length) {
             case 1: // GET OBJ's position
                 var curleft = 0, curtop = 0;
-                if (_obj.offsetParent)
+                if (_obj.offsetParent) {
                     while (1) {
-                    curleft += _obj.offsetLeft;
-                    curtop += _obj.offsetTop;
-                    if (!_obj.offsetParent)
-                        break;
-                    _obj = _obj.offsetParent;
+                        curleft += _obj.offsetLeft;
+                        curtop += _obj.offsetTop;
+                        if (!_obj.offsetParent) break;
+                        _obj = _obj.offsetParent;
+                    }
                 }
                 else {
                     if (_obj.x) curleft += _obj.x;
@@ -417,6 +418,7 @@ DOM = {
                 return $dh.bounds(_obj, [arguments[1], arguments[2], arguments[3], arguments[4]]);
         }
     },
+    
     innerTxt: function(_obj, _txt) { // GET/SET inner text
         if (arguments.length == 2) { // SET inner text for OBJ
             if ($dh.isNil(_txt)) _txt = "";
@@ -454,12 +456,12 @@ DOM = {
         // Stop event bubbling
         evt.stop = evt.stop || function() {this.stopPropagation();this.preventDefault();};
         // Get key code
-        if (evt.type == "keypress") {
+        if (evt.type.indexOf("key") == 0) {
             if (evt.charCode === 0 || evt.charCode == undefined) {
-                evt.code = event.keyCode;
+                evt.code = WIN.event.keyCode;
             }
             else {
-                evt.code = event.charCode;
+                evt.code = WIN.event.charCode;
             }
         }
         // Mouse position
@@ -468,26 +470,26 @@ DOM = {
         if (!evt.target) evt.target = evt.srcElement;
         return evt;
     },
-    addEv: function(_obj, _ev, _handler) {  // Traditional attach event method
-        if (_ev.substr(0, 2) == "on") _ev = _ev.substr(2);
-        if (_obj.addEventListener) {
-            _obj.addEventListener(_ev, _handler, false);
+    addEv: function(el, ev, handler) {  // Traditional attach event method
+        if (ev.substr(0, 2) == "on") ev = ev.substr(2);
+        if (el.addEventListener) {
+            el.addEventListener(ev, handler, false);
         }
         else {
-            _obj.attachEvent('on' + _ev, _handler);
+            el.attachEvent('on' + ev, handler);
         }
     },
-    rmEv: function(_obj, _ev, _handler) {  // Traditional remove event method
-        if (_ev.substr(0, 2) == "on") _ev = _ev.substr(2);
-        if (_obj.detachEvent) {
-            _obj.detachEvent('on' + _ev, _handler);
+    rmEv: function(el, ev, handler) {  // Traditional remove event method
+        if (ev.substr(0, 2) == "on") ev = ev.substr(2);
+        if (el.detachEvent) {
+            el.detachEvent('on' + ev, handler);
         }
         else {
-            _obj.removeEventListener(_ev, _handler, false);
+            el.removeEventListener(ev, handler, false);
         }
     },    
     preventLeak: function(obj, prop) {
-        $dh.addEv($dh.container, "unload", function() {
+        $dh.addEv(WIN, "unload", function() {
             if (obj && obj[prop]) obj[prop] = null;
         });
     }
@@ -497,50 +499,44 @@ DOM = {
 // "SHORTCUT" interfaces. Easy to remember, easy to use, easy to extend later ---
 $dh.set($dh.shortcuts, {
     pos: $dh.pos, size: $dh.size, bounds: $dh.bounds, opac: $dh.opac, txt: $dh.innerTxt,
-    bg: function(_obj, _info) {
-        if (_obj.tagName) {
-            _obj.style.background = _info;
+    bg: function(el, bg) {
+        if (el.tagName) {
+            el.style.background = bg;
         }
         else {
-            _obj.background = _info;
+            el.background = bg;
         }
     },
-    color: function(_obj, _c) {
-        if (_obj.tagName) {
-            _obj.style.color = _c;
+    color: function(el, cl) {
+        if (el.tagName) {
+            el.style.color = cl;
         }
         else {
-            _obj.color = _c;
+            el.color = cl;
         }
     },
-    html: function(_obj, _HTML)  {_obj.innerHTML = _HTML;},
-    style: function(_obj, _info) {$dh.css(_obj, _info);},
-    parentNode: function(_obj, _pa) {_pa.appendChild(_obj);}
+    html: function(el, HTML) {el.innerHTML = HTML;},
+    style: function(el, stl) {$dh.css(el, stl);},
+    parentNode: function(el, pa) {pa.appendChild(el);}
 });
 
 // Extend DHTiny
 $dhtiny.extend($dhtiny, DOM);
-
+// Extend shortcut set
 (function() {
-    var evs = "click,dbclick,blur,focus,mousedown,mouseup,mouseover,mouseout,mousemove,keydown,keypress,keyup,scroll,change,select,resize,error,submit,load,unload".split(",");
-    for(var i=0; i < evs.length;i++) {
-        var temp = "function(obj, func) {obj.on___ = func;$dh.preventLeak(obj, 'on___')}";
+    var temp,i,evs = "click,dbclick,blur,focus,mousedown,mouseup,mouseover,mouseout,mousemove,keydown,keypress,keyup,scroll,change,select,resize,error,submit,load,unload".split(",");
+    for(i=0; i < evs.length;i++) {
+        temp = "function(obj, func) {obj.on___ = func;$dh.preventLeak(obj, 'on___')}";
         eval("temp = "+ temp.replace(/___/g,evs[i]));
         $dh.addShortcut(evs[i], temp);
     }
 })();
 
 //---------- Create an "Access point" to global script  ------//
-$dh.addEv(window,"load", function() {
-    // Call loaders
-    if ($dh.loaders) {
-        for (var x=0; x < $dh.loaders.length; x++) {
-            if ($dh.isFunc($dh.loaders[x])) {
-                $dh.loaders[x]();
-            }
-            else if ($dh.isStr($dh.loaders[x])) {// Evaluate string
-                eval($dh.loaders[x]);
-            }
+$dh.addEv(WIN,"load", function() {
+    for (var x=0; x < $dh.loaders.length; x++) {
+        if ($dh.isFunc($dh.loaders[x])) {
+            $dh.loaders[x]();
         }
     }
 });
