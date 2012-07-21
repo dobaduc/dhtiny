@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Script including demo</title>
-    <script type="text/javascript" src="../dhtiny.js"></script>
+    <script type="text/javascript" src="../../dhtiny.js"></script>
+    <script type="text/javascript" src="../../dhtiny-dom.js"></script>
 </head>
 <body>
 <button onclick="testDOM()">Test some DOM methods </button>
@@ -15,9 +16,9 @@ Source code:
 
 <script id="jssource" type="text/javascript">
 function testClass() {
-	var t1 = new Test1("Class number 1");
+	var t1 = new $dh.Test1("Class number 1");
     t1.hello();
-    var t2 = new Test2("Class number 2");
+    var t2 = new $dh.Test2("Class number 2");
     t2.hello();
     t2.inter1();
     t2.inter2();
@@ -71,7 +72,7 @@ $dh.newClass("Test2","Test1", "Inter1", Inter2, {
 			   ". My className is " + this._class +"\n"+
 			   ". My superclass is " + this._super.prototype._class);
 		
-		alert("Class Test2 is implementing " + this._inherited.length + " interfaces.");
+		alert("Class Test2 is implementing " + this._extended.length + " interfaces.");
 	}
 });
 
