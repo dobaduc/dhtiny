@@ -39,7 +39,7 @@ $dhtiny = $dh = {
             if (!obj) obj = (props instanceof Array) ? [] : {};
             for (var p in props) {
                 if (props[p] == obj || props[p] == undefined) continue;
-                if ($dh.shortcuts[p]) { // Shorcuts always have highest priority
+                if ($dh.shortcuts[p]) { // Shorcuts always have highest priority                    
                     $dh.shortcuts[p](obj, props[p]);
                 }
                 else {
@@ -61,15 +61,13 @@ $dhtiny = $dh = {
     // All in one creator
     New: function(_what, _props, _deep) {
         if (typeof _what == "string") {
-            _what = $dh[_what];
+            _what = $dh.scope[_what];
         }
         return $dh.construct({}, _what, _props);
     },
     addShortcut: function(name, method) {$dh.shortcuts[name] = method;}, // Add new function to DHTShorcut list
 
-    //===============================================================
     //===== CLASS MANAGEMENT SECTION ================================
-    //===============================================================   
     instOf: [], // Global variable to count number of class instances
     // Each class has following basic properties:
     //  1. _class: Class name (String)
@@ -78,13 +76,13 @@ $dhtiny = $dh = {
     newClass: function(_className, _super) { // All arguments after 2nd one will be treated as normal class/objects
         // 1. Create class        
         var args = arguments, k,
-            C = $dh[_className] = function() {
+            C = $dh.scope[_className] = function() {
                 if (this.init) this.init.apply(this, arguments);
                 $dh.instOf[_className].push(this);
             };
 
         // 2. Inheriting super class/ user-defined methods and properties
-        if ($dh.isStr(_super))  _super = $dh[_super];
+        if ($dh.isStr(_super))  _super = $dh.scope[_super];
         $dh.extend(C, _super);
         if ($dh.isFunc(_super)) C.prototype._super = _super;
 
@@ -92,7 +90,7 @@ $dhtiny = $dh = {
         C.prototype._extended = [];
         for (k = args.length - 2; k >= 2; k--) {
             if ($dh.isStr(args[k])) {
-                args[k] = $dh[args[k]];
+                args[k] = $dh.scope[args[k]];
             }            
             C.prototype._extended.push(args[k]); // Save objects' information for later access
             $dh.extend(C, args[k]);
@@ -106,13 +104,13 @@ $dhtiny = $dh = {
         }
 
         // 5. Make it callable from namespace        
-        $dh.namesp(_className, $dh[_className]);
+        $dh.namesp(_className, $dh.scope[_className]);
     },
 
     // Create/set namespace with given structure
     namesp: function(nsp, target) {
         if (nsp.indexOf(".") < 0) return;
-        var pr = $dh, np = namespace.split(".");
+        var pr = $dh.scope, np = nsp.split(".");
         for (i= 0; i < np.length -1 ; i++) {
             if (!pr[np[i]]) pr[np[i]] = {};
             pr = pr[np[i]];

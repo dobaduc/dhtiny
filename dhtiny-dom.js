@@ -2,18 +2,17 @@
 (function(){
 $dhtiny.init(window);
 var WIN = window,
-    NAV = navigator,
     DOC = WIN.document;
-    
+    DOCE = DOC.documentElement;
+
 DOM = {
-    // Override New method
+    // All in one creator
     New: function(_what, _props, _deep) {
-        if ($dh.isStr(_what)) {
-            if (!$dh.isFunc( $dh[_what] )) {
+        if (typeof _what == "string") {
+            if (!$dh.isFunc($dh.scope[_what])) {
                 return $dh.set(DOC.createElement(_what), _props);
-            } else {
-                _what = $dh[_what];
             }
+            _what = $dh.scope[_what];            
         }
         return $dh.construct({}, _what, _props);
     },
@@ -22,8 +21,8 @@ DOM = {
     loaders: [],
     addLoader: function(func) {$dh.loaders.push(func);},
     root: (function() { //--- Detect DHTiny path----
-        var scripts = DOC.getElementsByTagName("script"), x;
-        for (x = 0; x < scripts.length; x++)
+        var scripts = DOC.getElementsByTagName("script");
+        for (var x = 0; x < scripts.length; x++)
             if (scripts[x].src.toUpperCase().indexOf("DHTINY.JS") >= 0)
             return scripts[x].src.substr(0, scripts[x].src.toUpperCase().indexOf("DHTINY.JS"));
     })(),
@@ -34,17 +33,23 @@ DOM = {
         name:null, version:null,
         init: function() {
             // Use $dh.browser.name and $dh.browser.name to determine browser information   
-            this.name = this.getName(this.bsNameVer) || "Unknown";
+            this.name = this.getName(this.bsNameVer) || "UnknownBrowser";
             // Enable checker like this: $dh.browser.ie 
             this[this.name] = true;
-            this.version = this.getVer(NAV.userAgent) || this.getVer(NAV.appVersion) || "Unknown";
+            this.version = this.getVer(navigator.userAgent) || this.getVer(navigator.appVersion) || "UnknownVersion";
         },
         mode: (function(){
             var mode= DOC.compatMode;
-            switch(mode){
-                case 'BackCompat': return 'quirks'; break;
-                case 'CSS1Compat': return 'Standards Compliance'; break;
-                default: return 'Unknown'; break;
+            if(mode){
+                if(mode=='BackCompat') {
+                    return 'quirks';
+                }
+                else if(mode=='CSS1Compat') {
+                    return 'Standards Compliance';
+                }
+                else {
+                    return 'Almost Standards Compliance';
+                }
             }
         })(),
         getName: function(data) {
@@ -65,11 +70,11 @@ DOM = {
         },
         bsNameVer: [
 	        {prop: WIN.opera, bsName: "opera"},
-		    {str: NAV.userAgent, vdName: "Chrome", bsName: "chrome"},
-		    {str: NAV.vendor, vdName: "Apple", bsName: "safari", verStr: "version"},
-		    {str: NAV.vendor, vdName: "KDE", bsName: "konqueror"},
-		    {str: NAV.userAgent, vdName: "Firefox", bsName: "firefox"},
-		    {str: NAV.userAgent, vdName: "MSIE", bsName: "ie", verStr: "MSIE"}
+		    {str: navigator.userAgent, vdName: "Chrome", bsName: "chrome"},
+		    {str: navigator.vendor, vdName: "Apple", bsName: "safari", verStr: "version"},
+		    {str: navigator.vendor, vdName: "KDE", bsName: "konqueror"},
+		    {str: navigator.userAgent, vdName: "Firefox", bsName: "firefox"},
+		    {str: navigator.userAgent, vdName: "MSIE", bsName: "ie", verStr: "MSIE"}
 	    ]
     },
     
@@ -95,18 +100,17 @@ DOM = {
             }
         },
         getFreeXHR: function() {
-            var i, XHR;
-            for (i = 0; i < this.XHRs.length; i++) {
+            for (var i = 0; i < this.XHRs.length; i++) {
                 if (this.XHRs[i].isFree == true) return i;
             }
-            XHR = $dh.ajax.newXHR();
+            var XHR = $dh.ajax.newXHR();
             XHR.requestIndex = this.XHRs.length;
             this.XHRs.push(XHR);
             return this.XHRs.length - 1;
         },
-        // TODO: Wrap all properties to a single object
         sendRequest: function(url, methodtype, postdata, callBack) {
-            var pos = this.getFreeXHR(), xhr = this.XHRs[pos];
+            var pos = this.getFreeXHR();
+            var xhr = this.XHRs[pos];
             xhr.callBack = callBack;
 
             if (xhr.xmlhttp) { // Do what old xmlhttp object does
@@ -178,13 +182,12 @@ DOM = {
         }
     },
     Require: function(file, type) { // Import js, css
-        var i, files;
         if ($dh.isStr(file)) {
             type = type || "js";
             file = file.toLowerCase();
             if (file.indexOf(",") > 0) { // Multiple file
-                files = file.split(","), i;
-                for (i= files.length-1; i>0; i--){
+                var files = file.split(",");
+                for (var i= files.length-1; i>0; i--){
                     files[i] = files[0].replace(/\/([^,]*)$/,"/"+ files[i]);
                 }
                 $dh.Require(files, type);
@@ -199,19 +202,20 @@ DOM = {
             }
         }
         else if ($dh.isArr(file)){
-            for (i=0; i < file.length; i++) {
+            for (var i=0; i < file.length; i++) {
                 $dh.Require(file[i], type);
             }
         }
     },
     Eval: function(data, type, isFilePath) { // Evaluate an expression which is a javascript/css string or a JS/CSS filename
-        var head = DOC.getElementsByTagName("head")[0] || DOC.documentElement, tag;
+        var head = DOC.getElementsByTagName("head")[0] || DOCE;
+        var tag;
         if (type != "css") {
-            tag = DOC.createElement("script");     
+            var tag = DOC.createElement("script");     
             tag.type = "text/javascript";
         }
         else {
-            tag = DOC.createElement("style");
+            var tag = DOC.createElement("style");
             tag.type = "text/css";
         }
         if (isFilePath) { // Data is a file path            
@@ -226,7 +230,9 @@ DOM = {
         };
         
         head.appendChild( tag );
-        if (type == "js") head.removeChild( tag );
+        if (type == "js") {
+            head.removeChild( tag );
+        }
     },
 
     //=======================================================================
@@ -239,9 +245,9 @@ DOM = {
         }
         else {
             var sx = 0, sy = 0;
-            if (DOC.documentElement.scrollTop) {
-                sx = DOC.documentElement.scrollLleft;
-                sy = DOC.documentElement.scrollTop;
+            if (DOCE.scrollTop) {
+                sx = DOCE.scrollLleft;
+                sy = DOCE.scrollTop;
             }
             return {
                 left: ev.clientX + DOC.body.scrollLeft + sx - DOC.body.clientLeft,
@@ -255,9 +261,9 @@ DOM = {
         return {left: msPos.left - objPos.left, top: msPos.top - objPos.top};
     },
     bodySize: function(fullsizeFlag) {   // GET document body's size
-        var de = DOC.documentElement, bd = DOC.body, st;
-        if (fullsizeFlag) {            
-            st = de.scrollTop, sl = de.scrollLeft;
+        if (fullsizeFlag) {
+            var de = DOCE;
+            var st = de.scrollTop, sl = de.scrollLeft;
             de.scrollTop = de.scrollLeft = 99999999;
             d = {w: de.scrollLeft, h: de.scrollTop};
             de.scrollTop = st;
@@ -265,9 +271,9 @@ DOM = {
         }
         else { d = {w: 0, h: 0}; };
         return !$dh.isNil(WIN.innerWidth) ? {width: d.w + WIN.innerWidth, height: d.h + WIN.innerHeight} : 
-                    (!$dh.isNil(de) && !$dh.isNil(de.clientWidth) && de.clientWidth != 0 ?
-                    {width: d.w + de.clientWidth, height: d.h + de.clientHeight} :
-                    {width: d.w + bd.clientWidth, height: d.h + bd.clientHeight}
+                    (!$dh.isNil(DOCE) && !$dh.isNil(DOCE.clientWidth) && DOCE.clientWidth != 0 ?
+                    {width: d.w + DOCE.clientWidth, height: d.h + DOCE.clientHeight} :
+                    {width: d.w + DOC.body.clientWidth, height: d.h + DOC.body.clientHeight}
             )
     },
     //============ 2-way callable functions ====================================
@@ -310,7 +316,8 @@ DOM = {
         }
     },
     el: function(prop, option) { // Select elements that match givent options
-        if (prop && prop.tagName) return prop; // Already got an element object
+        if (prop && prop.tagName)
+            return prop; // Already got an element object
         if (!option) {
             if ($dh.isStr(prop)) {
                 return DOC.getElementById(prop);
@@ -339,14 +346,14 @@ DOM = {
             return _obj;
         }
         // GET _id's opacity
-        var styleObj = _obj.style, str, str2;
+        var styleObj = _obj.style;
         if (styleObj.opacity) return styleObj.opacity * 100;
         if (styleObj.MozOpacity) return styleObj.MozOpacity * 100;
         if (styleObj.KhtmlOpacity) return styleObj.KhtmlOpacity * 100;
         // IE - Special things lead to stupid things
         if (!$dh.isNil(styleObj.filter) && styleObj.filter != "") {
-            str = styleObj.filter;
-            str2 = str.substr(14);
+            var str = styleObj.filter;
+            var str2 = str.substr(14);
             return parseInt(str2.substr(0, str2.length - 1));
         }
         else return 100; // Nothing to get
@@ -356,13 +363,13 @@ DOM = {
         switch (arguments.length) {
             case 1: // GET OBJ's position
                 var curleft = 0, curtop = 0;
-                if (_obj.offsetParent) {
+                if (_obj.offsetParent)
                     while (1) {
-                        curleft += _obj.offsetLeft;
-                        curtop += _obj.offsetTop;
-                        if (!_obj.offsetParent) break;
-                        _obj = _obj.offsetParent;
-                    }
+                    curleft += _obj.offsetLeft;
+                    curtop += _obj.offsetTop;
+                    if (!_obj.offsetParent)
+                        break;
+                    _obj = _obj.offsetParent;
                 }
                 else {
                     if (_obj.x) curleft += _obj.x;
@@ -418,7 +425,6 @@ DOM = {
                 return $dh.bounds(_obj, [arguments[1], arguments[2], arguments[3], arguments[4]]);
         }
     },
-    
     innerTxt: function(_obj, _txt) { // GET/SET inner text
         if (arguments.length == 2) { // SET inner text for OBJ
             if ($dh.isNil(_txt)) _txt = "";
@@ -456,12 +462,12 @@ DOM = {
         // Stop event bubbling
         evt.stop = evt.stop || function() {this.stopPropagation();this.preventDefault();};
         // Get key code
-        if (evt.type.indexOf("key") == 0) {
+        if (evt.type == "keypress") {
             if (evt.charCode === 0 || evt.charCode == undefined) {
-                evt.code = WIN.event.keyCode;
+                evt.code = event.keyCode;
             }
             else {
-                evt.code = WIN.event.charCode;
+                evt.code = event.charCode;
             }
         }
         // Mouse position
@@ -470,22 +476,22 @@ DOM = {
         if (!evt.target) evt.target = evt.srcElement;
         return evt;
     },
-    addEv: function(el, ev, handler) {  // Traditional attach event method
-        if (ev.substr(0, 2) == "on") ev = ev.substr(2);
-        if (el.addEventListener) {
-            el.addEventListener(ev, handler, false);
+    addEv: function(_obj, _ev, _handler) {  // Traditional attach event method
+        if (_ev.substr(0, 2) == "on") _ev = _ev.substr(2);
+        if (_obj.addEventListener) {
+            _obj.addEventListener(_ev, _handler, false);
         }
         else {
-            el.attachEvent('on' + ev, handler);
+            _obj.attachEvent('on' + _ev, _handler);
         }
     },
-    rmEv: function(el, ev, handler) {  // Traditional remove event method
-        if (ev.substr(0, 2) == "on") ev = ev.substr(2);
-        if (el.detachEvent) {
-            el.detachEvent('on' + ev, handler);
+    rmEv: function(_obj, _ev, _handler) {  // Traditional remove event method
+        if (_ev.substr(0, 2) == "on") _ev = _ev.substr(2);
+        if (_obj.detachEvent) {
+            _obj.detachEvent('on' + _ev, _handler);
         }
         else {
-            el.removeEventListener(ev, handler, false);
+            _obj.removeEventListener(_ev, _handler, false);
         }
     },    
     preventLeak: function(obj, prop) {
@@ -496,37 +502,38 @@ DOM = {
 };
 // End of DOM
 
+// Extend DHTiny
+$dhtiny.extend($dhtiny, DOM);
+
 // "SHORTCUT" interfaces. Easy to remember, easy to use, easy to extend later ---
 $dh.set($dh.shortcuts, {
     pos: $dh.pos, size: $dh.size, bounds: $dh.bounds, opac: $dh.opac, txt: $dh.innerTxt,
-    bg: function(el, bg) {
-        if (el.tagName) {
-            el.style.background = bg;
+    bg: function(_obj, _info) {
+        if (_obj.tagName) {
+            _obj.style.background = _info;
         }
         else {
-            el.background = bg;
+            _obj.background = _info;
         }
     },
-    color: function(el, cl) {
-        if (el.tagName) {
-            el.style.color = cl;
+    color: function(_obj, _c) {
+        if (_obj.tagName) {
+            _obj.style.color = _c;
         }
         else {
-            el.color = cl;
+            _obj.color = _c;
         }
     },
-    html: function(el, HTML) {el.innerHTML = HTML;},
-    style: function(el, stl) {$dh.css(el, stl);},
-    parentNode: function(el, pa) {pa.appendChild(el);}
+    html: function(_obj, _HTML)  {_obj.innerHTML = _HTML;},
+    style: function(_obj, _info) {$dh.css(_obj, _info);},
+    parentNode: function(_obj, _pa) {_pa.appendChild(_obj);}
 });
 
-// Extend DHTiny
-$dhtiny.extend($dhtiny, DOM);
-// Extend shortcut set
+// Add event shortcuts
 (function() {
-    var temp,i,evs = "click,dbclick,blur,focus,mousedown,mouseup,mouseover,mouseout,mousemove,keydown,keypress,keyup,scroll,change,select,resize,error,submit,load,unload".split(",");
-    for(i=0; i < evs.length;i++) {
-        temp = "function(obj, func) {obj.on___ = func;$dh.preventLeak(obj, 'on___')}";
+    var evs = "click,dbclick,blur,focus,mousedown,mouseup,mouseover,mouseout,mousemove,keydown,keypress,keyup,scroll,change,select,resize,error,submit,load,unload".split(",");
+    for(var i=0; i < evs.length;i++) {
+        var temp = "function(obj, func) {obj.on___ = func;$dh.preventLeak(obj, 'on___')}";
         eval("temp = "+ temp.replace(/___/g,evs[i]));
         $dh.addShortcut(evs[i], temp);
     }
@@ -534,9 +541,15 @@ $dhtiny.extend($dhtiny, DOM);
 
 //---------- Create an "Access point" to global script  ------//
 $dh.addEv(WIN,"load", function() {
-    for (var x=0; x < $dh.loaders.length; x++) {
-        if ($dh.isFunc($dh.loaders[x])) {
-            $dh.loaders[x]();
+    // Call loaders
+    if ($dh.loaders) {
+        for (var x=0; x < $dh.loaders.length; x++) {
+            if ($dh.isFunc($dh.loaders[x])) {
+                $dh.loaders[x]();
+            }
+            else if ($dh.isStr($dh.loaders[x])) {// Evaluate string
+                eval($dh.loaders[x]);
+            }
         }
     }
 });
