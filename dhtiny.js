@@ -56,6 +56,7 @@ $dhtiny = $dh = {
     isFunc: function(func) {return !$dh.isNil(func) && (func instanceof Function || typeof func == "function");},
     isStr: function(_obj) {return !$dh.isNil(_obj) && (_obj instanceof String || typeof _obj == "string");},
     isNum: function(_obj) {return !$dh.isNil(_obj) && (_obj instanceof Number || typeof _obj == "number");},
+    //TODO: isHash: function(){},
     isObj: function(_obj) {return (_obj instanceof Object || typeof _obj == "object") && (!$dh.isArr(_obj));},
     
     // All in one creator

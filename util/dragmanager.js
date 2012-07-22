@@ -1,4 +1,4 @@
-$dh.Require("util/event");
+$dh.Require("dhtiny-dom","util/event");
 $dh.isLoaded("util/dragmanager", true);
 
 $dh.dragger = DHDrag = new DHEvent();

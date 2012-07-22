@@ -1,3 +1,4 @@
+$dh.isLoaded("util/imglist", true);
 $dh.imgList = {
     items: {},
     defaultExt: "gif",

@@ -1,3 +1,4 @@
+$dh.isLoaded("util/color", true);
 $dh.color = {
     hex2dec: function(str) {
         var val = 0;
