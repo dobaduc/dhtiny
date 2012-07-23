@@ -1,26 +1,13 @@
 // Set window as global container
 (function(){
-var WIN = window,
-    DOC = WIN.document;
-    DOCE = DOC.documentElement;
-
+$dhtiny.init(window);
+DOC = window.document || window.documentElement;
 DOM = {
-    // All in one creator
-    New: function(_what, _props, _deep) {
-        if (typeof _what == "string") {
-            if (!$dh.isFunc($dh.scope[_what])) {
-                return $dh.set(DOC.createElement(_what), _props);
-            }
-            _what = $dh.scope[_what];            
-        }
-        return $dh.construct({}, _what, _props);
-    },
-    
     //==== Loaders
     loaders: [],
     addLoader: function(func) {$dh.loaders.push(func);},
     root: (function() { //--- Detect DHTiny path----
-        var scripts = DOC.getElementsByTagName("script");
+        var scripts = document.getElementsByTagName("script");
         for (var x = 0; x < scripts.length; x++)
             if (scripts[x].src.toUpperCase().indexOf("DHTINY.JS") >= 0)
             return scripts[x].src.substr(0, scripts[x].src.toUpperCase().indexOf("DHTINY.JS"));
@@ -38,7 +25,7 @@ DOM = {
             this.version = this.getVer(navigator.userAgent) || this.getVer(navigator.appVersion) || "UnknownVersion";
         },
         mode: (function(){
-            var mode= DOC.compatMode;
+            var mode= document.compatMode;
             if(mode){
                 if(mode=='BackCompat') {
                     return 'quirks';
@@ -68,7 +55,7 @@ DOM = {
             return parseFloat(verStr.substring(index + this.verDetectStr.length + 1));
         },
         bsNameVer: [
-	        {prop: WIN.opera, bsName: "opera"},
+	        {prop: $dh.container.opera, bsName: "opera"},
 		    {str: navigator.userAgent, vdName: "Chrome", bsName: "chrome"},
 		    {str: navigator.vendor, vdName: "Apple", bsName: "safari", verStr: "version"},
 		    {str: navigator.vendor, vdName: "KDE", bsName: "konqueror"},
@@ -88,10 +75,10 @@ DOM = {
             return {isFree: true, xmlhttp: this.newXmlHttpObj()};
         },
         newXmlHttpObj: function() {
-            if (XMLHttpRequest) {
+            if ($dh.container.XMLHttpRequest) {
                 return new XMLHttpRequest();
             }
-            else if (ActiveXObject) {
+            else if ($dh.container.ActiveXObject) {
                 return new ActiveXObject("Microsoft.XMLHTTP");
             }
             else {
@@ -207,14 +194,14 @@ DOM = {
         }
     },
     Eval: function(data, type, isFilePath) { // Evaluate an expression which is a javascript/css string or a JS/CSS filename
-        var head = DOC.getElementsByTagName("head")[0] || DOCE;
+        var head = document.getElementsByTagName("head")[0] || document.documentElement;
         var tag;
         if (type != "css") {
-            var tag = DOC.createElement("script");     
+            var tag = document.createElement("script");     
             tag.type = "text/javascript";
         }
         else {
-            var tag = DOC.createElement("style");
+            var tag = document.createElement("style");
             tag.type = "text/css";
         }
         if (isFilePath) { // Data is a file path            
@@ -225,7 +212,7 @@ DOM = {
             tag.text = data;
         }
         else {
-            tag.appendChild( DOC.createTextNode( data ) );
+            tag.appendChild( document.createTextNode( data ) );
         };
         
         head.appendChild( tag );
@@ -238,30 +225,30 @@ DOM = {
     //===== DOM METHODS ==============================================
     //=======================================================================
     msPos: function(ev) { // GET mouse/event position
-        ev = ev || WIN.event;
+        ev = ev || $dh.container.event;
         if (ev.pageX || ev.pageY) {
             return {left: ev.pageX, top: ev.pageY};
         }
         else {
             var sx = 0, sy = 0;
-            if (DOCE.scrollTop) {
-                sx = DOCE.scrollLleft;
-                sy = DOCE.scrollTop;
+            if (document.documentElement.scrollTop) {
+                sx = document.documentElement.scrollLleft;
+                sy = document.documentElement.scrollTop;
             }
             return {
-                left: ev.clientX + DOC.body.scrollLeft + sx - DOC.body.clientLeft,
-                top: ev.clientY + DOC.body.scrollTop + sy - DOC.body.clientTop
+                left: ev.clientX + document.body.scrollLeft + sx - document.body.clientLeft,
+                top: ev.clientY + document.body.scrollTop + sy - document.body.clientTop
             };
         }
     },
     msOffset: function(ev, _obj) { // GET mouse's offset position within an object
-        ev = ev || WIN.event;
+        ev = ev || $dh.container.event;
         var objPos = $dh.pos(_obj), msPos = $dh.msPos(ev);
         return {left: msPos.left - objPos.left, top: msPos.top - objPos.top};
     },
     bodySize: function(fullsizeFlag) {   // GET document body's size
         if (fullsizeFlag) {
-            var de = DOCE;
+            var de = document.documentElement;
             var st = de.scrollTop, sl = de.scrollLeft;
             de.scrollTop = de.scrollLeft = 99999999;
             d = {w: de.scrollLeft, h: de.scrollTop};
@@ -269,10 +256,10 @@ DOM = {
             de.scrollLeft = sl;
         }
         else { d = {w: 0, h: 0}; };
-        return !$dh.isNil(WIN.innerWidth) ? {width: d.w + WIN.innerWidth, height: d.h + WIN.innerHeight} : 
-                    (!$dh.isNil(DOCE) && !$dh.isNil(DOCE.clientWidth) && DOCE.clientWidth != 0 ?
-                    {width: d.w + DOCE.clientWidth, height: d.h + DOCE.clientHeight} :
-                    {width: d.w + DOC.body.clientWidth, height: d.h + DOC.body.clientHeight}
+        return !$dh.isNil($dh.container.innerWidth) ? {width: d.w + $dh.container.innerWidth, height: d.h + $dh.container.innerHeight} : 
+                    (!$dh.isNil(document.documentElement) && !$dh.isNil(document.documentElement.clientWidth) && document.documentElement.clientWidth != 0 ?
+                    {width: d.w + document.documentElement.clientWidth, height: d.h + document.documentElement.clientHeight} :
+                    {width: d.w + document.body.clientWidth, height: d.h + document.body.clientHeight}
             )
     },
     //============ 2-way callable functions ====================================
@@ -288,7 +275,7 @@ DOM = {
         if (obj.currentStyle) return obj.currentStyle[prop]; // IE
         // FF, Opera...
         prop = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
-        return WIN.getComputedStyle(obj, null).getPropertyValue(prop);
+        return $dh.container.getComputedStyle(obj, null).getPropertyValue(prop);
     },
     
     hasClass: function(_ele, _cls) {
@@ -319,7 +306,7 @@ DOM = {
             return prop; // Already got an element object
         if (!option) {
             if ($dh.isStr(prop)) {
-                return DOC.getElementById(prop);
+                return document.getElementById(prop);
             }
             else {
                 return null;
@@ -327,10 +314,10 @@ DOM = {
         }
         else {
             if (option.toLowerCase() === "tag") {
-                return DOC.getElementsByTagName(prop);
+                return document.getElementsByTagName(prop);
             }
             else if (option.toLowerCase() == "name") {
-                return DOC.getElementsByName(prop);
+                return document.getElementsByName(prop);
             }
         }
     },
@@ -494,18 +481,12 @@ DOM = {
         }
     },    
     preventLeak: function(obj, prop) {
-        $dh.addEv(WIN, "unload", function() {
+        $dh.addEv($dh.container, "unload", function() {
             if (obj && obj[prop]) obj[prop] = null;
         });
     }
 };
 // End of DOM
-
-// Extend DHTiny
-$dh.init(WIN);
-$dh.extend($dh, DOM);
-// Mark this file as loaded
-$dh.isLoaded("dhtiny-dom", true);
 
 // "SHORTCUT" interfaces. Easy to remember, easy to use, easy to extend later ---
 $dh.set($dh.shortcuts, {
@@ -531,7 +512,9 @@ $dh.set($dh.shortcuts, {
     parentNode: function(_obj, _pa) {_pa.appendChild(_obj);}
 });
 
-// Add event shortcuts
+// Extend DHTiny
+$dhtiny.extend($dhtiny, DOM);
+
 (function() {
     var evs = "click,dbclick,blur,focus,mousedown,mouseup,mouseover,mouseout,mousemove,keydown,keypress,keyup,scroll,change,select,resize,error,submit,load,unload".split(",");
     for(var i=0; i < evs.length;i++) {
@@ -542,7 +525,7 @@ $dh.set($dh.shortcuts, {
 })();
 
 //---------- Create an "Access point" to global script  ------//
-$dh.addEv(WIN,"load", function() {
+$dh.addEv(window,"load", function() {
     // Call loaders
     if ($dh.loaders) {
         for (var x=0; x < $dh.loaders.length; x++) {

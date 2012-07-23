@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Script including demo</title>    
+    <script type="text/javascript" src="../dhtiny-dom.js"></script>
+</head>
+<body>
+<button onclick="testDOM()">Test some DOM methods </button>
+<button onclick="testClass()">Test OOP</button>
+<br />
+<br />
+Source code:
+<pre id ="source" style="background:#eeeeee;">
+</pre>
+
+<script id="jssource" type="text/javascript">
+function testClass() {
+	var t1 = new Test1("Class number 1");
+    t1.hello();
+    var t2 = new Test2("Class number 2");
+    t2.hello();
+    t2.inter1();
+    t2.inter2();
+}
+
+function testDOM() {
+    if ($dh.el("TestDiv"))
+        $dh.rmCh(document.body, $dh.el("TestDiv")); // Remove child
+    var div = $dh.New("div", {
+        id : "TestDiv",
+        html: "Element",
+        bg: "white",
+        click: function() {
+            alert("Going to change background and opacity... ");
+            $dh.css(this, { bg: "#eeeeee", opac:50 });
+            alert("Going to change position and size... ");
+            $dh.css(this, { pos:[200,200], size: [200,200]});
+            alert("Going to remove this element...");
+            $dh.rmCh(document.body, this);
+        },
+        mouseover: function() { this.style.color = "blue"; },
+        mouseout: function() { this.style.color = "red"; },        
+        parentNode: document.body,
+        color: "red"
+    });
+	$dh.css(div,{bounds:[100,200,100,100], border: "solid 2px gray"});
+}
+
+$dh.newClass("Test1", {
+	init: function(name) {
+		this.name= name;
+	},
+	hello: function() {
+		alert("Hello! My name is " + this.name);
+	}
+});
+$dh.newClass("Inter1", {
+	inter1: function() {
+		alert("Class " + this._class + " implementing interface Inter1 ");
+	}
+});
+Inter2 = {
+	inter2: function() {
+		alert("Class " + this._class + " implementing interface Inter2 ");
+	}
+}
+
+$dh.newClass("Test2","Test1", "Inter1", Inter2, {
+	hello: function() {
+		alert( "Hello! My BIG name is: " + this.name.toUpperCase() +"\n"+
+			   ". My className is " + this._class +"\n"+
+			   ". My superclass is " + this._super.prototype._class);
+		
+		alert("Class Test2 is implementing " + this._inherited.length + " interfaces.");
+	}
+});
+
+</script>
+</body>
+</html>

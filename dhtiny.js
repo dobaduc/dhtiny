@@ -164,5 +164,5 @@ $dhtiny = $dh = {
             return setTimeout(newFunc, length);
         }
     }
-}
+};
 }

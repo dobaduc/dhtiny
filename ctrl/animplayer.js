@@ -2,7 +2,7 @@
  * Animation player - Just like general media player
  */
 
-$dh.Require(["ctrl/animitem", "ctrl/slider", "ctrl/imgbutton"]);
+$dh.Require(["ctrl/animitem,slider,imgbutton"]);
 $dh.isLoaded("ctrl/animplayer", true);
 
 $dh.newClass("DHAnimPlayer", DHAnimItem, {
