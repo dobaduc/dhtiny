@@ -137,8 +137,22 @@ $dh.newClass("DHTreeView", DHRichCanvas, {
 		if (node.icon)
 		    $dh.addEv(node.icon, "click",    function(ev) {self.nodeClick(node, ev);});
 	},
+    
+    getParentNode: function(node) {
+        if (node.depth == 0) return null;
+        return node.parentNode.parentNode;
+    },
+    
+    getParentNodes: function(node) {
+        var depth = node.depth, res = [];
+        while (node.depth > 0) {
+            res.unshift(node.parentNode.parentNode);
+            node = node.parentNode.parentNode;
+        }
+        return res;
+    },
 	
-	/*================== エベント処理    ============*/
+	//=========== Event handling   ============*/
 	collapseNode: function(node, ev) {
 		if (!node.childList) return;
 		node.childList.style.display = "none";
@@ -186,19 +200,30 @@ $dh.newClass("DHTreeView", DHRichCanvas, {
 	},
 	
 	setNodeStatus: function(node, status) {
+        // Private function
+        function setClass(className) {
+            var classes = "expandedNode,normalNode,selectedNode,collapsedNode".split(",");
+            for (var i = classes.length -1; i >= 0; i--) {
+                if (classes[i] != className) {
+                    $dh.rmClass(node.caption, classes[i]);
+                }
+            }            
+            $dh.addClass(node.caption, className);
+        }
+        
 		switch(status) {
 		    case "unselected":
 			    if (node.status == "") return;
 			    if (node.status == "selected" && node.childList)
-			        node.caption.className = "expandedNode";
-		        node.status = "";
-		        node.caption.className = "normalNode";
+			        setClass("expandedNode");
+		        node.status = "";                
+		        setClass("normalNode");
 		        //node.icon.src = this.imagePath + node.iconType + ".gif";
 			    break;
-		    case "selected":
+		    case "selected":                
 		        if (node.status == "selected") return;
 		        node.status = "selected";
-		        node.caption.className = "selectedNode";
+		        setClass("selectedNode");
 			    break;
 			case "collapsed":
 			    if (node.childList) {   
@@ -211,7 +236,7 @@ $dh.newClass("DHTreeView", DHRichCanvas, {
 			            this.rootList.style.display = "";
 			        }
 			        node.status = "collapsed";
-			        node.caption.className = "collapsedNode";        
+			        setClass("collapsedNode");
 			    }
 			    break;
 			case "expanded":
@@ -224,7 +249,7 @@ $dh.newClass("DHTreeView", DHRichCanvas, {
 			            this.rootList.style.display = "";
 			        }			        
 			        node.status = "expanded";
-			        node.caption.className = "expandedNode";			        
+			        setClass("expandedNode");
 			    }
 			    break;
 		}

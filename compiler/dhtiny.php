@@ -37,6 +37,10 @@ function combineDHTinyModules($files, &$loadedFiles = array(), &$ret= "") {
             $f = $f . ".js";
         }
         $fullPath = DHTINY_ROOT . "/" . $f;
+        if(preg_match("/\\.\\./", $fullPath)) {
+            // Invalid file path (Prevent simple file path injection)
+            continue;
+        }
         if (!isset($loadedFiles[$f]) && file_exists($fullPath)) {
             $str = file_get_contents($fullPath);
             

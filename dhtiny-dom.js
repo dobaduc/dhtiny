@@ -291,9 +291,17 @@ DOM = {
         return WIN.getComputedStyle(obj, null).getPropertyValue(prop);
     },
     
-    hasClass: function(_ele, _cls) {
-        var classes = _ele.className;
-        return classes && new RegExp("(^|\s+)" + _cls + "(\s+|$)").test(classes);
+    hasClass: function(el, cls) {
+        var classes = el.className;
+        return classes && new RegExp("(^|\\s)" + cls + "(\\s|$)").test(classes);
+    },
+    
+    addClass: function(el, cls) {
+        if(!this.hasClass(el, cls)) el.className += " " + cls;
+    },
+        
+    rmClass: function(el, cls) {
+        if (this.hasClass(el, cls)) el.className=el.className.replace(new RegExp("(^|\\s)"+cls+"(\\s|$)")," ");
     },
 
     addCh: function(pa, children) { // Append a list of children
@@ -528,7 +536,7 @@ $dh.set($dh.shortcuts, {
     },
     html: function(_obj, _HTML)  {_obj.innerHTML = _HTML;},
     style: function(_obj, _info) {$dh.css(_obj, _info);},
-    parentNode: function(_obj, _pa) {_pa.appendChild(_obj);}
+    parentNode: function(_obj, _pa) {$dh.el(_pa).appendChild(_obj);}
 });
 
 // Add event shortcuts
