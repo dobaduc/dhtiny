@@ -129,7 +129,7 @@ DOM = {
                 xhr.xmlhttp.send(null);
             }
             else {
-                xhr.xmlhttp.send(postdata + (postdata.length > 0 ? "&" : ""));
+                xhr.xmlhttp.send(postdata);
             }
             return pos; // IMPORTANT!!!: Return the index of request inside XHR array 
         },

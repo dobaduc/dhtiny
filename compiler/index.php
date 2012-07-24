@@ -1,10 +1,9 @@
 <?php
-error_reporting(E_ALL);
 require_once 'dhtiny.php';
 $dhtinyTreeData = json_encode(readDHTinyTree(DHTINY_ROOT));
 
-if (isset($_REQUEST["dhtinymodules"])) {
-    $fileList = $_REQUEST["dhtinymodules"];
+if (isset($_REQUEST["modules"])) {
+    $fileList = $_REQUEST["modules"];
     
     // Make sure that DHTiny is included
     if (!in_array("dhtiny", $fileList) && !in_array("dhtiny.js", $fileList)) {
@@ -57,7 +56,7 @@ exit;*/
 <body>
 
 <div>
-&nbsp;Available components
+&nbsp;Grap components from list
 </div>
 
 <div id="selectedModules">

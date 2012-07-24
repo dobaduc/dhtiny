@@ -36,7 +36,6 @@ $dh.addLoader(function() {
 
     var resultData = processTree(TreeData),                
         treeView = new DHTreeView(document.body, {
-            height: "50%",
             nodeHeight: 22, imagePath: $dh.root + "res/images/DHTreeView/",
             listType: 2, captionpadding: 4, iconwidth: 20,
             className: "DHTreeView",
@@ -66,7 +65,10 @@ $dh.addLoader(function() {
             $dh.New("li", {
                 id: node.fullPath,
                 html:node.fullPath,
-                parentNode: "moduleList"
+                parentNode: "moduleList",
+                click: function() {
+                    this.parentNode.removeChild(this);
+                }
             });
         } else {
             $dh.rmClass(node.caption, "compileSelectedNode");
@@ -82,12 +84,25 @@ $dh.addLoader(function() {
 function getCompiledCode() {
     // Get file list
     var modules = $dh.el("moduleList").children, postData=[];
+    // Return if nothing to do
+    if (modules.length == 0) {
+        alert("Please select at least one DHTiny component to compile");
+        return;
+    }
+    // Return if now working
+    if (window.compilingModules == true) return;
+    
+    // Mark as working
+    window.compilingModules = true;
+    
     for (var i = 0; i < modules.length; i ++) {
         if (modules[i].innerHTML != "") {
-            postData.push(modules[i].id);
+            postData.push(encodeURIComponent(modules[i].id));
         }
     }
-    $dh.ajax.POST("index.php","dhtinymodulesdhtinymodules="+encodeURI(postData), function(res){
-        $dh.el("output").value = res;
+    postData = "modules[]=" + postData.join("&modules[]=");
+    $dh.ajax.POST("index.php", postData, function(res){
+        $dh.el("output").value = res;        
+        window.compilingModules = false;
     });
 }

@@ -11,22 +11,33 @@ body {margin:0px; padding: 0px; overflow:auto;font-family: Tahoma;}
     left:5px;
     top:5%;
     width:18%;
-    height: 50%;
+    height: 40%;
 }
 .DHTreeView li div:hover{text-decoration:underline;}
 .DHTreeView div{ cursor:pointer;}
 .DHTreeView .selectedNode { color:#af0000;background:#ECE9D8; font-weight:bold;}
-.DHTreeView .compileSelectedNode { text-decoration:line-through; font-style: italic; color: blue;}
+.DHTreeView .compileSelectedNode { font-style: italic; font-weight: bold; font-size: 14px; text-decoration: underline;}
+.DHTreeView .compileSelectedNode:hover{ color: blue; text-decoration: line-through; }
 .DHTreeView .expandedNode { color: #af0000;font-weight:normal;}
 .DHTreeView .normalNode { color: #af0000;font-weight:normal;}
 
 #selectedModules {    
     position:absolute;
     left:5px;
-    top: 59%;
+    top: 49%;
     width:18%;
-    height: 45%;    
+    height: 55%;  
 }
+
+#selectedModules li {
+    margin-left: 20px;
+}
+
+#selectedModules li:hover {    
+    text-decoration: line-through;
+    cursor: pointer;
+}
+
 
 #compileButton {    
     width: 70px;
