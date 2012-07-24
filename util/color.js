@@ -66,8 +66,7 @@ $dh.color = {
         }
     },
     getRGBHash: function(color) {
-        if (!$dh.isStr(color))
-            return color;
+        if (!$dh.isStr(color)) return color;
         color = $dh.color.toRGB(color);
         color = color.substr(4, color.length-5).split(",");
         return { r: parseInt(color[0]), g: parseInt(color[1]), b: parseInt(color[2]) }

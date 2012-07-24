@@ -2,7 +2,7 @@
 $dh.Require("util/event");
 $dh.isLoaded("util/animation", true);
 
-$dh.newClass("DHEventController", DHEvent, {
+$dh.newClass("DHEventController", "DHEvent", {
     // NOTE: exeFunc and setPropValue must be defined in child classes
     setPropValue: function() {},
     _NGStatus: {

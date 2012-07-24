@@ -541,11 +541,12 @@ $dh.set($dh.shortcuts, {
 
 // Add event shortcuts
 (function() {
-    var evs = "click,dbclick,blur,focus,mousedown,mouseup,mouseover,mouseout,mousemove,keydown,keypress,keyup,scroll,change,select,resize,error,submit,load,unload".split(",");
+    var evs = "click,dbclick,blur,focus,mousedown,mouseup,mouseover,mouseout,mousemove,keydown,keypress,keyup,scroll,change,select,resize,error,submit,load,unload".split(","),
+        temp = "function(obj, func) {obj.on___ = func;$dh.preventLeak(obj, 'on___')}",
+        tempFunc;
     for(var i=0; i < evs.length;i++) {
-        var temp = "function(obj, func) {obj.on___ = func;$dh.preventLeak(obj, 'on___')}";
-        eval("temp = "+ temp.replace(/___/g,evs[i]));
-        $dh.addShortcut(evs[i], temp);
+        eval("tempFunc = "+ temp.replace(/___/g,evs[i]));
+        $dh.addShortcut(evs[i], tempFunc);
     }
 })();
 
@@ -556,9 +557,6 @@ $dh.addEv(WIN,"load", function() {
         for (var x=0; x < $dh.loaders.length; x++) {
             if ($dh.isFunc($dh.loaders[x])) {
                 $dh.loaders[x]();
-            }
-            else if ($dh.isStr($dh.loaders[x])) {// Evaluate string
-                eval($dh.loaders[x]);
             }
         }
     }

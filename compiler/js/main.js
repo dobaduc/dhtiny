@@ -94,6 +94,7 @@ function getCompiledCode() {
     
     // Mark as working
     window.compilingModules = true;
+    $dh.el("output").value = "NOW COMPILING...";
     
     for (var i = 0; i < modules.length; i ++) {
         if (modules[i].innerHTML != "") {

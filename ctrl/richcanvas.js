@@ -1,5 +1,5 @@
 // Required event class
-$dh.Require("util/event");
+$dh.Require(["dhtiny-dom","util/event"]);
 $dh.isLoaded("ctrl/richcanvas", true);
 
 $dh.newClass("DHRichCanvas", DHEvent, {

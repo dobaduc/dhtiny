@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 // Basically prepare DHTiny's namespace. Full name: $dhtiny, short name: $dh 
 if (typeof $dhtiny == "undefined") {
-$dhtiny = $dh = {    
+$dhtiny = $dh = {
     // Library information
     version: "1.1.5",
     // Library container (scope) - Useful to use DHTiny inside child IFRAME
@@ -107,6 +107,9 @@ $dhtiny = $dh = {
         // 5. Make it callable from namespace        
         $dh.namesp(_className, $dh.scope[_className]);
     },
+    
+    // Return corresponding class inside the scope managed by DHTiny
+    getClass: function(className) { return $dh.scope[className]; },
 
     // Create/set namespace with given structure
     namesp: function(nsp, target) {
